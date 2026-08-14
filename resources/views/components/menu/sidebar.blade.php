@@ -1,15 +1,16 @@
 @php
     $adminItems = [
-//        ['route' => 'carousel.index',        'icon' => 'gallery-horizontal-end', 'label' => __('Carousel')],
-//        ['route' => 'bodyparts.index',  'icon' => 'person-standing', 'label' => __('Body Parts')],
-//        ['route' => 'muscles.index',     'icon' => 'biceps-flexed', 'label' => __('Muscles')],
+//        ['route' => 'carousel.index', 'icon' => 'gallery-horizontal-end', 'label' => __('Carousel')],
+//        ['route' => 'bodyparts.index', 'icon' => 'person-standing', 'label' => __('Body Parts')],
+//        ['route' => 'musclegroups.index', 'icon' => 'biceps-flexed', 'label' => __('Musclegroup')],
+//        ['route' => 'muscles.index', 'icon' => 'biceps-flexed', 'label' => __('Muscles')],
 
     ];
 
     $navItems = [
         ['route' => 'dashboard',        'icon' => 'house', 'label' => 'Home'],
 //        ['route' => 'exercises.index',  'icon' => 'activity', 'label' => __('Exercises')],
-//        ['route' => 'workouts.index',   'icon' => 'layers', 'label' => 'Workouts'],
+//        ['route' => 'workouts.index',   'icon' => 'layers', 'label' => __('Workouts')],
 //        ['route' => 'statistics.index', 'icon' => 'chart-bar', 'label' => 'Stats'],
 //        ['route' => 'calendar.index',   'icon' => 'calendar-days', 'label' => 'Calendar'],
 //        ['route' => 'watchinfo.index',   'icon' => 'watch', 'label' => 'Watch Info'],
@@ -47,22 +48,6 @@
                         </span>
                 </a>
             @endforeach
-
-            {{-- Quick start session --}}
-            {{--            <a href="{{ route('sessions.start') }}"--}}
-            <a href="#"
-               onclick="event.preventDefault(); document.getElementById('sidebar-quick-start-form').submit();"
-               class="flex items-center px-4 py-3 text-primary hover:text-secondary hover:bg-surface-hover transition-colors lg:hidden">
-                <div
-                    class="w-6 h-6 flex items-center justify-center bg-secondary rounded-full text-white text-[10px] shrink-0">
-                    ▶
-                </div>
-                <span
-                    class="ml-4 font-medium overflow-hidden whitespace-nowrap transition-opacity duration-300"
-                    :class="sidebarOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100'">
-                    {{ __('Start Workout') }}
-                </span>
-            </a>
         </div>
         @if (Auth::user()->is_admin)
             <div class="border-t border-border pt-4 space-y-2">
@@ -122,9 +107,3 @@
         </div>
     </div>
 </nav>
-
-{{-- Hidden form voor quick start (geen workout) --}}
-{{--<form id="sidebar-quick-start-form" method="POST" action="{{ route('sessions.start') }}" class="hidden">--}}
-<form id="sidebar-quick-start-form" method="POST" action="#" class="hidden">
-    @csrf
-</form>

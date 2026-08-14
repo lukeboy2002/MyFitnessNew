@@ -26,14 +26,18 @@
     --color-secondary: var(--secondary);
     --color-muted: var(--muted);
 
+    --color-card: var(--card);
+
     --color-success: hsl(142.09, 70.56%, 45.29%);
     --color-warning: hsl(37.69, 92.13%, 50.2%);
     --color-danger: hsl(0, 84.24%, 60.2%);
     --color-info: hsl(217.22, 91.22%, 59.8%);
+
     --color-muscle: hsl(293.4 69.5% 48.8%); /* Fuchsia-600 */
     --color-exercise: hsl(262.1 83.3% 57.8%); /* Violet-600 */
     --color-bodypart: hsl(200.4 98% 39.4%); /* Sky-600 */
     --color-workout: hsl(161.4 93.5% 30.4%); /* Emerald-600 */
+    --color-musclegroup: hsl(333.3 71.4% 50.6%); /* Pink-600 */
 }
 
 :root {
@@ -44,6 +48,8 @@
     --surface-alt: hsl(32.14, 97.67%, 83.14%);
     --border: hsl(32.14, 97.67%, 83.14%);
     --border-alt: hsl(32.14, 97.67%, 83.14%);
+
+    --card: hsl(10, 10%, 90.27%);
 
     --primary: hsl(215, 27.91%, 16.86%);
     --secondary: hsl(24.6 95% 53.1%); /* orange-500 */
@@ -58,6 +64,8 @@
     --surface-alt: hsl(30, 6.25%, 25.1%);
     --border: hsl(30, 6.25%, 25.1%);
     --border-alt: hsl(30, 6.25%, 25.1%);
+
+    --card: hsl(0, 0%, 26.27%);
 
     --primary: hsl(60, 9.09%, 97.84%);
     --secondary: hsl(20.5 90.2% 48.2%); /* orange-600 */

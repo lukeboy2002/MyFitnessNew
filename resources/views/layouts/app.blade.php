@@ -21,11 +21,11 @@
 </head>
 <body class="bg-body text-primary font-sans antialiased transition-colors duration-200 min-h-screen">
 
-<x-menu-sidebar/>
+<x-menu.sidebar/>
 
 <div class="flex flex-col min-h-screen transition-all duration-300"
      :class="sidebarOpen ? 'md:pl-48' : 'md:pl-16 lg:pl-48'">
-    <x-menu-main/>
+    <x-menu.main/>
 
     <main class="pb-24 md:pb-8 flex-1">
         <div class="py-5 max-w-7xl mx-auto w-full">
@@ -35,7 +35,7 @@
         </div>
     </main>
 </div>
-<x-menu-phone/>
+<x-menu.phone/>
 @livewireScripts
 @stack('scripts')
 </body>

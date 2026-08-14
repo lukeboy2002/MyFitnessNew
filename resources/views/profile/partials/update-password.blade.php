@@ -28,7 +28,7 @@
         </div>
 
         <div class="flex items-center gap-4">
-            <x-button variant="primary" class="w-full">{{ __('Save') }}</x-button>
+            <x-button.default variant="primary" class="w-full">{{ __('Save') }}</x-button.default>
 
             @if (session('status') === 'password-updated')
                 <p

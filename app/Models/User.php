@@ -8,6 +8,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\LaravelPasskeys\Models\Concerns\HasPasskeys;
@@ -19,6 +20,21 @@ class User extends Authenticatable implements HasPasskeys, MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, InteractsWithPasskeys, Notifiable;
+
+    public function workouts(): HasMany
+    {
+        return $this->hasMany(Workout::class);
+    }
+
+    public function exercises(): HasMany
+    {
+        return $this->hasMany(Exercise::class);
+    }
+
+    public function workoutSessions(): HasMany
+    {
+        return $this->hasMany(WorkoutSession::class);
+    }
 
     public function getAvatarUrlAttribute(): string
     {

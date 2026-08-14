@@ -5,12 +5,12 @@
             {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.') }}
         </p>
 
-        <x-button variant="danger"
-                  class="w-full mt-6"
-                  x-data=""
-                  x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')">
+        <x-button.default variant="danger"
+                          class="w-full mt-6"
+                          x-data=""
+                          x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')">
             {{ __('Delete Account') }}
-        </x-button>
+        </x-button.default>
     </x-card>
 
     <x-modal name="confirm-user-deletion" :show="$errors->isNotEmpty()" focusable>
@@ -38,13 +38,13 @@
             </div>
 
             <div class="mt-6 flex justify-end">
-                <x-button variant="outline" class="w-full" x-on:click="$dispatch('close')">
+                <x-button.default variant="outline" class="w-full" x-on:click="$dispatch('close')">
                     {{ __('Cancel') }}
-                </x-button>
+                </x-button.default>
 
-                <x-button variant="danger" class="w-full ms-3">
+                <x-button.default variant="danger" class="w-full ms-3">
                     {{ __('Delete Account') }}
-                </x-button>
+                </x-button.default>
             </div>
         </form>
     </x-modal>

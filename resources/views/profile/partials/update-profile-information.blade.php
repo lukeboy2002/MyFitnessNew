@@ -13,14 +13,14 @@
         </div>
 
         <div>
-            <x-form.label for="name" :value="__('Name')"/>
+            <x-form.label for="name" :value="__('Full Name')"/>
             <x-form.input name="name" autocomplete="off" type="text" class="w-full" wire:model="name" required autofocus
                           autocomplete="name"/>
             <x-form.error class="mt-2" :messages="$errors->get('name')"/>
         </div>
 
         <div>
-            <x-form.label for="email" :value="__('Email')"/>
+            <x-form.label for="email" :value="__('Email Address')"/>
             <x-form.input wire:model="email" id="email" name="email" type="email" class="mt-1 block w-full" required
                           autocomplete="username" :value="$email"/>
             <x-form.error class="mt-2" :messages="$errors->get('email')"/>
@@ -46,7 +46,7 @@
         </div>
 
         <div class="flex items-center gap-4">
-            <x-button variant="primary" class="w-full">{{ __('Save') }}</x-button>
+            <x-button.default variant="primary" class="w-full">{{ __('Save') }}</x-button.default>
 
             @if (session('status') === 'profile-updated')
                 <p

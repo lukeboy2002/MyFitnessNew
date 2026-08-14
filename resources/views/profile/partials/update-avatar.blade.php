@@ -28,10 +28,10 @@
             </div>
 
             <div class="flex items-center gap-4">
-                <x-button variant="primary" type="submit" wire:loading.attr="disabled" wire:target="avatar"
-                          class="w-full">
+                <x-button.default variant="primary" type="submit" wire:loading.attr="disabled" wire:target="avatar"
+                                  class="w-full">
                     {{ __('Upload') }}
-                </x-button>
+                </x-button.default>
 
                 <p x-data="{ show: false }"
                    x-show="show"

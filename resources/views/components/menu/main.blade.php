@@ -8,29 +8,25 @@
                 </span>
         </a>
     </div>
-    <div class="flex md:hidden items-center gap">
+    <div class="flex md:hidden items-center">
         @php
             $previous = url()->previous();
         @endphp
 
         @if($previous && $previous !== route('dashboard'))
-            <x-link variant="ghost"
-                    href="{{ $previous }}"
-                    icon="arrow-big-left-dash"
-                    size="4"
+            <x-link.default variant="ghost"
+                            href="{{ $previous }}"
+                            icon="arrow-big-left-dash"
+                            size="4"
             />
         @endif
-        
-        <x-link variant="ghost"
-                href="{{ route('profile.index') }}"
-                icon="cog"
-                size="4"
-        />
+
         <form method="POST" action="{{ route('logout') }}">
             @csrf
             <a href="{{ route('logout') }}"
                class="flex items-center justify-center gap-2 px-2 py-2 rounded-lg transition duration-150 ease-in-out text-primary hover:text-secondary"
-               onclick="event.preventDefault(); this.closest('form').submit();">
+               onclick="event.preventDefault(); this.closest('form').submit();"
+            >
                 <x-lucide-log-out class="w-4 h-4"/>
             </a>
         </form>

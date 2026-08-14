@@ -38,5 +38,12 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
             'is_admin' => false,
         ]);
+
+        $this->call([
+            CarouselSeeder::class,
+            BodyPartSeeder::class,
+            MuscleGroupSeeder::class,
+            MuscleSeeder::class,
+        ]);
     }
 }

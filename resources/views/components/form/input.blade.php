@@ -1,26 +1,36 @@
 @props([
+    'icon' => null,
+    'prefixText' => null,
+    'id' => null,
+    'name' => null,
     'type' => 'text',
-    'variant' => 'default', // default | auth
 ])
 
 @php
-    $base = 'border border-border text-primary text-sm block w-full px-3 py-2.5 placeholder:text-muted focus:outline-none';
-    $default = 'bg-surface rounded-md focus:border-secondary focus:ring-0 shadow-xs';
-    // Auth variant: slightly different radius, background, and focus ring style
-    $auth = 'rounded-xl focus:ring-2 focus:ring-secondary/50';
-
-    $classes = trim($base.' '.($variant === 'auth' ? $auth : $default));
+    $hasPrefix = filled($icon) || filled($prefixText);
 @endphp
 
-@if($variant === 'auth')
-    <div class="relative mt-2">
-        <input type="{{ $type }}" {{ $attributes->merge([
-               'class' => 'peer block border-0 w-full bg-transparent px-3 py-1.5 text-sm text-muted placeholder:text-muted focus:outline-none focus:ring-0' ]) }}/>
-        <div aria-hidden="true"
-             class="absolute inset-x-0 bottom-0 border-t border-muted peer-focus:border-t-2 peer-focus:border-secondary"></div>
-    </div>
-@else
-    <input type="{{ $type }}" {{ $attributes->merge(['class' => $classes]) }}/>
-@endif
+<div class="flex shadow-xs rounded-md group">
+    @if ($hasPrefix)
+        <span
+            class="inline-flex items-center px-3 text-sm text-muted bg-transparent border border-border border-e-0 rounded-s-md group-focus-within:border-secondary">
+            @if (filled($icon))
+                <x-dynamic-component :component="'lucide-' . $icon"
+                                     class="w-4 h-4 text-muted group-focus-within:text-secondary"/>
+            @else
+                {{ $prefixText }}
+            @endif
+        </span>
+    @endif
 
-
+    <input
+        type="{{ $type }}"
+        @if ($id) id="{{ $id }}" @endif
+        @if ($name) name="{{ $name }}" @endif
+        {{ $attributes->merge([
+            'class' => 'block w-full px-3 py-2.5 bg-transparent border border-border text-heading text-sm '
+                . ($hasPrefix ? 'rounded-e-md' : 'rounded-md')
+                . ' focus:border-secondary focus:ring-0 placeholder:text-muted',
+        ]) }}
+    >
+</div>

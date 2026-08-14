@@ -6,10 +6,10 @@
 
 <div onclick="authenticateWithPasskey()">
     @if ($slot->isEmpty())
-        <x-button variant="primary" icon="fingerprint-pattern" size="4" class="w-full">
+        <x-button.default variant="primary" icon="fingerprint-pattern" size="4" class="w-full">
 
             {{ __('passkeys::passkeys.authenticate_using_passkey') }}
-        </x-button>
+        </x-button.default>
 </div>
 @else
     {{ $slot }}
@@ -23,4 +23,4 @@
         </div>
     </div>
 @endif
-<x-divider>Or Continue with</x-divider>
+<x-divider.default title="Or Continue with"/>

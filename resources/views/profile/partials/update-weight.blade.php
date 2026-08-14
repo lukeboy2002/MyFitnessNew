@@ -3,18 +3,6 @@
     :title="__('Weight')"
     :description="__('Update the weight settings for your account')"
 >
-    {{--    <fieldset aria-label="Choose a weight option">--}}
-    {{--        <div class="mt-6 grid grid-cols-2 gap-3">--}}
-    {{--            <x-card-radio wire:model.live="weight" name="weight" value="kg" icon="lucide-weight">--}}
-    {{--                {{ __('Kilogram') }}--}}
-    {{--            </x-card-radio>--}}
-
-    {{--            <x-card-radio wire:model.live="weight" name="weight" value="lbs" icon="lucide-weight">--}}
-    {{--                {{ __('Ponds') }}--}}
-    {{--            </x-card-radio>--}}
-    {{--        </div>--}}
-
-    {{--    </fieldset>--}}
     <fieldset aria-label="Choose a weight option">
         <div class="mt-6 grid grid-cols-3 gap-2">
             @foreach([

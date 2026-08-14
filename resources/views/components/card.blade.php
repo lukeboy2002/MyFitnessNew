@@ -1,26 +1,26 @@
 @props([
-    'title',
+    'title' => null,
     'description' => null,
     'variant' => 'outline',
 ])
 
 @php
     $variants = [
-        'outline' => 'border border-border bg-transparent',
+        'outline' => 'p-4 border border-border bg-transparent',
         'ghost' => '',
-        'primary' => 'border border-border bg-surface text-primary w-full',
-        'secondary' => 'bg-surface text-primary',
-        'success' => 'bg-success text-primary',
-        'danger' => 'bg-error text-primary',
-        'warning' => 'bg-warning text-primary',
-        'info' => 'bg-info text-primary',
+        'primary' => 'p-4 border border-border bg-surface text-primary w-full',
+        'secondary' => 'p-4 bg-surface text-primary',
+        'success' => 'p-4 bg-success text-primary',
+        'danger' => 'p-4 bg-error text-primary',
+        'warning' => 'p-4 bg-warning text-primary',
+        'info' => 'p-4 bg-info text-primary',
     ];
 @endphp
 
 <div {{ $attributes->merge([
-    'class' => 'rounded-lg p-4 shadow-sm shadow-surface-secondary ' . ($variants[$variant] ?? $variants['outline'])
+    'class' => 'rounded-lg shadow-sm shadow-surface-secondary ' . ($variants[$variant] ?? $variants['outline'])
 ]) }}>
-    <div class="flex items-center justify-between border-b border-border pb-1 mb-2">
+    <div class="flex items-center justify-between pb-1 mb-2">
         <div>
             <h2 class="text-lg font-semibold text-primary">{{ $title }}</h2>
 
