@@ -3,14 +3,22 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['workout_id', 'exercise_id', 'order', 'notes'])]
+#[Fillable([
+    'workout_id',
+    'exercise_id',
+    'order',
+    'notes',
+])]
 class WorkoutExercise extends Model
 {
-    public function workout()
+    use HasFactory;
+
+    public function workout(): BelongsTo
     {
         return $this->belongsTo(Workout::class);
     }
@@ -20,17 +28,14 @@ class WorkoutExercise extends Model
         return $this->belongsTo(Exercise::class);
     }
 
-    public function sets(): HasMany
+    /**
+     * Set templates for this exercise in the workout.
+     */
+    public function workoutExerciseSets(): HasMany
     {
-        return $this->hasMany(WorkoutExerciseSet::class)
-            ->orderBy('set_number');
+        return $this->hasMany(WorkoutExerciseSet::class)->orderBy('set_number');
     }
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [

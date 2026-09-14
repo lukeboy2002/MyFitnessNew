@@ -1,7 +1,8 @@
 @php
     $navItems = [
         ['route' => 'dashboard',        'icon' => 'house', 'label' => 'Home'],
-//        ['route' => 'workouts.index',   'icon' => 'layers', 'label' => 'Workouts'],
+        ['route' => 'exercises.index',  'icon' => 'activity', 'label' => __('Exercises')],
+        ['route' => 'workout.index',   'icon' => 'layers', 'label' => 'Workouts'],
         ['route' => 'profile.index', 'icon' => 'user', 'label' => 'Profile'],
     ]
 @endphp

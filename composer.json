@@ -21,6 +21,7 @@
         "spatie/laravel-passkeys": "^1.8"
     },
     "require-dev": {
+        "albertoarena/laravel-truss": "^1.8",
         "fakerphp/faker": "^1.23",
         "laravel/boost": "^2.2",
         "laravel/breeze": "^2.4",

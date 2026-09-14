@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->text('description')->nullable();
             $table->boolean('is_archived')->default(false);
             $table->timestamps();
 

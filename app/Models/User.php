@@ -14,8 +14,24 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\LaravelPasskeys\Models\Concerns\HasPasskeys;
 use Spatie\LaravelPasskeys\Models\Concerns\InteractsWithPasskeys;
 
-#[Fillable(['name', 'username', 'avatar', 'email', 'is_admin', 'preferred_language', 'preferred_theme', 'preferred_weight', 'preferred_distance', 'password'])]
-#[Hidden(['password', 'remember_token'])]
+#[Fillable([
+    'name',
+    'username',
+    'avatar',
+    'email',
+    'is_admin',
+    'preferred_language',
+    'preferred_theme',
+    'preferred_weight',
+    'preferred_distance',
+    'password',
+])]
+
+#[Hidden([
+    'password',
+    'remember_token',
+])]
+
 class User extends Authenticatable implements HasPasskeys, MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
@@ -48,11 +64,6 @@ class User extends Authenticatable implements HasPasskeys, MustVerifyEmail
         return 'https://www.gravatar.com/avatar/'.md5(strtolower($this->email)).'?d=mp&s=80';
     }
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [

@@ -4,13 +4,18 @@ namespace App\Models;
 
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['muscle_group_id', 'name', 'slug'])]
+#[Fillable([
+    'muscle_group_id',
+    'name',
+    'slug',
+])]
 class Muscle extends Model
 {
-    use Sluggable;
+    use HasFactory, Sluggable;
 
     public function muscleGroup(): BelongsTo
     {

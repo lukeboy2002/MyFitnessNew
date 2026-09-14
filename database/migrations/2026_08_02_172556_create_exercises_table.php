@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->enum('type', ['cardio', 'strength']);
             $table->text('description')->nullable();
+            $table->text('howto')->nullable();
             $table->string('image_path')->nullable();
             $table->timestamps();
 

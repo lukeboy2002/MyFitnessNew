@@ -39,11 +39,24 @@ class DatabaseSeeder extends Seeder
             'is_admin' => false,
         ]);
 
+        User::factory()->create([
+            'name' => 'Amy Hendriks',
+            'username' => 'Amy',
+            'email' => 'amy@myfitness.test',
+            'password' => bcrypt('password'),
+            'is_admin' => false,
+        ]);
+
         $this->call([
             CarouselSeeder::class,
             BodyPartSeeder::class,
             MuscleGroupSeeder::class,
             MuscleSeeder::class,
+            ExerciseSeeder::class,
+            ExerciseBodyPartSeeder::class,
+            ExerciseMuscleGroupSeeder::class,
+            ExerciseMuscleSeeder::class,
+            ExerciseShowSeeder::class,
         ]);
     }
 }

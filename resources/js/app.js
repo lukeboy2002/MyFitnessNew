@@ -1,8 +1,12 @@
 import './bootstrap';
 import './passkeys';
 import 'flowbite';
-// import './ToggleTheme.js';
-// import './TipTapEditor.js';
+import './WorkoutTimer';
+import './exercise-chart.js'
+import './TipTapEditor.js';
+import intersect from '@alpinejs/intersect'
+
+Alpine.plugin(intersect)
 
 // import Alpine from 'alpinejs';
 //

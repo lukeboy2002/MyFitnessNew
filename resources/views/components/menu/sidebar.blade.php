@@ -1,16 +1,17 @@
 @php
     $adminItems = [
-//        ['route' => 'carousel.index', 'icon' => 'gallery-horizontal-end', 'label' => __('Carousel')],
-//        ['route' => 'bodyparts.index', 'icon' => 'person-standing', 'label' => __('Body Parts')],
-//        ['route' => 'musclegroups.index', 'icon' => 'biceps-flexed', 'label' => __('Musclegroup')],
-//        ['route' => 'muscles.index', 'icon' => 'biceps-flexed', 'label' => __('Muscles')],
+        ['route' => 'carousel.index', 'icon' => 'gallery-horizontal-end', 'label' => __('Carousel')],
+        ['route' => 'bodyparts.index', 'icon' => 'person-standing', 'label' => __('Body Parts')],
+        ['route' => 'musclegroups.index', 'icon' => 'biceps-flexed', 'label' => __('Musclegroup')],
+        ['route' => 'muscles.index', 'icon' => 'biceps-flexed', 'label' => __('Muscles')],
 
     ];
 
     $navItems = [
         ['route' => 'dashboard',        'icon' => 'house', 'label' => 'Home'],
-//        ['route' => 'exercises.index',  'icon' => 'activity', 'label' => __('Exercises')],
-//        ['route' => 'workouts.index',   'icon' => 'layers', 'label' => __('Workouts')],
+        ['route' => 'workout.index',   'icon' => 'layers', 'label' => __('Workouts')],
+        ['route' => 'exercises.index',  'icon' => 'activity', 'label' => __('Exercises')],
+
 //        ['route' => 'statistics.index', 'icon' => 'chart-bar', 'label' => 'Stats'],
 //        ['route' => 'calendar.index',   'icon' => 'calendar-days', 'label' => 'Calendar'],
 //        ['route' => 'watchinfo.index',   'icon' => 'watch', 'label' => 'Watch Info'],

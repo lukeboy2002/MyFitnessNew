@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Workout::class)->constrained()->cascadeOnDelete();
             $table->timestamp('started_at');
-            $table->timestamp('finished_at')->nullable();
+            $table->timestamp('completed_at')->nullable();
             $table->boolean('completed')->default(false);
             $table->text('notes')->nullable();
             $table->timestamps();

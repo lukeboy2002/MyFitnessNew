@@ -1,0 +1,143 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Workout;
+use App\Models\WorkoutSession;
+use App\Models\WorkoutSet;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
+
+class WorkoutSessionController extends Controller
+{
+    /**
+     * Start a new workout session.
+     */
+    public function start(Request $request): RedirectResponse
+    {
+
+        $request->validate([
+            'workout_id' => [
+                'required',
+                'integer',
+                'exists:workouts,id',
+            ],
+        ]);
+
+        /* Get the user's active workout. */
+        $workout = Workout::query()
+            ->where('id', $request->integer('workout_id'))
+            ->where('user_id', $request->user()->id)
+            ->where('is_archived', false)
+            ->with(['workoutExercises.workoutExerciseSets'])
+            ->firstOrFail();
+
+        /*
+         * Create the workout session.
+         */
+        $session = WorkoutSession::create([
+            'user_id' => $request->user()->id,
+            'workout_id' => $workout->id,
+            'started_at' => now(),
+            'completed' => false,
+        ]);
+
+        /* Create actual workout sets from the workout template sets. */
+        foreach ($workout->workoutExercises as $workoutExercise) {
+            foreach ($workoutExercise->workoutExerciseSets as $templateSet) {
+                WorkoutSet::create([
+                    'workout_session_id' => $session->id,
+                    'workout_exercise_set_id' => $templateSet->id,
+                    'reps' => null,
+                    'weight' => null,
+                    'duration_seconds' => null,
+                    'distance_km' => null,
+                    'metric' => null,
+                    'metric_value' => null,
+                    'incline_percent' => null,
+                    'calories_total' => null,
+                    'calories_active' => null,
+                    'stroke_rate' => null,
+                    'pace_seconds' => null,
+                    'floors' => null,
+                    'rotations' => null,
+                    'avg_speed' => null,
+                    'mets' => null,
+                    'watts' => null,
+                    'avg_heart_rate' => null,
+                    'max_heart_rate' => null,
+                    'completed' => false,
+                    'notes' => null,
+                ]);
+            }
+        }
+
+        return redirect()->route('sessions.show', $session);
+    }
+
+    /**
+     * Show a workout session.
+     */
+    public function show(WorkoutSession $session): View
+    {
+
+        abort_unless(
+            $session->user_id === auth()->id(),
+            403
+        );
+
+        /* Load everything required for the workout session. */
+        $session->load([
+            'workout.workoutExercises.exercise',
+            'workout.workoutExercises.workoutExerciseSets' => fn ($query) => $query
+                ->with(['workoutSets' => fn ($query) => $query
+                    ->where(
+                        'workout_session_id', $session->id
+                    ),
+                ]),
+        ]);
+
+        return view(
+            'sessions.show', ['session' => $session]
+        );
+    }
+
+    public function complete(WorkoutSession $session): RedirectResponse
+    {
+
+        abort_unless(
+            $session->user_id === auth()->id(),
+            403
+        );
+
+        /* Prevent completing twice. */
+        if ($session->completed) {
+            return redirect()->route('sessions.show', $session);
+        }
+
+        /*
+         * Complete session.
+         */
+        $session->update([
+            'completed' => true,
+            'completed_at' => now(),
+        ]);
+
+        return redirect()
+            ->route('dashboard')
+            ->with('success', __('Workout completed!'));
+    }
+
+    public function summary(WorkoutSession $session): View
+    {
+        abort_unless($session->user_id === auth()->id(), 403);
+
+        $session->load([
+            'workout',
+            'workoutSets.workoutExerciseSet.workoutExercise.exercise',
+        ]);
+
+        return view('sessions.summary', compact('session'));
+    }
+}

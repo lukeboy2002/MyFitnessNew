@@ -76,6 +76,105 @@
     display: none !important;
 }
 
+input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 1rem;
+    width: 1rem;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ea580c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='6' x2='6' y2='18'/%3E%3Cline x1='6' y1='6' x2='18' y2='18'/%3E%3C/svg%3E");
+}
+
+@layer utilities {
+    .prose-orange :where(.prose, .prose :is(p, h1, h2, h3, h4, h5, h6, a, strong, em, code, blockquote, hr, th, td, ul, ol, li)) {
+        /* nodig om specificity consistent te houden */
+    }
+
+    .prose-orange.prose {
+        --tw-prose-body: var(--primary);
+        --tw-prose-headings: var(--secondary);
+        --tw-prose-lead: var(--secondary);
+        --tw-prose-links: var(--secondary);
+        --tw-prose-bold: var(--secondary);
+        --tw-prose-quotes: var(--secondary);
+        --tw-prose-quote-borders: var(--secondary);
+        --tw-prose-counters: var(--secondary);
+        --tw-prose-bullets: var(--secondary);
+        --tw-prose-hr: var(--secondary);
+        --tw-prose-code: var(--secondary);
+        --tw-prose-th-borders: var(--secondary);
+        --tw-prose-td-borders: var(--secondary);
+    }
+
+    .prose-orange.prose img {
+        @apply w-full h-auto m-0;
+    }
+
+    .prose-orange.prose a {
+        color: var(--secondary);
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .prose-orange.prose strong {
+        color: var(--secondary);
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .prose-orange.prose li::marker {
+        color: var(--secondary);
+    }
+
+    .prose-orange.prose a:hover {
+        color: hsl(24.6 95% 53.1%);
+    }
+
+    .prose-orange.prose code {
+        background-color: hsl(24.6 95% 93%);
+        color: var(--secondary);
+        padding: 0.25rem 0.4rem;
+        border-radius: 0.25rem;
+    }
+
+    /* Variant: prose-invert (voor dark) */
+    .prose-invert.prose {
+        --tw-prose-body: var(--primary);
+        --tw-prose-headings: var(--secondary);
+        --tw-prose-links: hsl(20.5 90.2% 48.2%);
+        --tw-prose-bold: hsl(20.5 90.2% 48.2%);
+    }
+
+    .prose-invert.prose a {
+        color: hsl(20.5 90.2% 48.2%);
+    }
+
+    .prose-invert.prose a:hover {
+        color: hsl(24.6 95% 53.1%);
+    }
+
+    .prose-invert.prose code {
+        background-color: hsl(215 27.9% 16.9%);
+        color: hsl(20.5 90.2% 48.2%);
+    }
+}
+
+.prose h1,
+.prose h2,
+.prose h3 {
+    @apply text-secondary font-theme;
+}
+
+.prose a {
+    @apply text-secondary hover:underline;
+}
+
+.dark .prose a {
+    @apply text-secondary;
+}
+
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
   so we've added these compatibility styles to make sure everything still

@@ -13,10 +13,10 @@
     $variants = [
         'outline' => 'p-4 border border-border bg-transparent',
         'ghost' => '',
-        'primary' => 'p-4 border border-border bg-surface text-primary w-full',
+        'primary' => 'p-4 border border-border bg-surface text-primary w-full' ,
         'secondary' => 'p-4 bg-surface text-primary',
         'success' => 'p-4 bg-success text-primary',
-        'danger' => 'p-4 bg-error text-primary',
+        'danger' => 'p-4 bg-danger text-primary',
         'warning' => 'p-4 bg-warning text-primary',
         'info' => 'p-4 bg-info text-primary',
     ];
@@ -36,7 +36,7 @@
 
             @if($title)
                 <div
-                    class="px-2 {{ $text_size }} {{ $text_color }} {{ $font_weight }} text-nowrap bg-transparent">
+                    class="{{ $text_size }} {{ $text_color }} {{ $font_weight }} text-nowrap bg-transparent">
                     {{ $title }}
                 </div>
 

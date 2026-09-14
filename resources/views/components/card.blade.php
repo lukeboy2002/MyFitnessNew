@@ -29,12 +29,13 @@
             @endif
         </div>
 
-        @isset($actions)
-            <div class="flex gap-2">
-                {{ $actions }}
-            </div>
-        @endisset
+
     </div>
+    @isset($actions)
+        <div class="flex justify-end items-center gap-2">
+            {{ $actions }}
+        </div>
+    @endisset
 
     {{ $slot }}
 </div>

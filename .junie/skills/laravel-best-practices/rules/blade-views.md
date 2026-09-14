@@ -12,11 +12,13 @@ Hardcoding classes prevents consumers from adding their own. `merge()` combines 
 
 ## Use `@pushOnce` for Per-Component Scripts
 
-If a component renders inside a `@foreach`, `@push` inserts the script N times. `@pushOnce` guarantees it's included exactly once.
+If a component renders inside a `@foreach`, `@push` inserts the script N times. `@pushOnce` guarantees it's included
+exactly once.
 
 ## Prefer Blade Components Over `@include`
 
-`@include` shares all parent variables implicitly (hidden coupling). Components have explicit props, attribute bags, and slots.
+`@include` shares all parent variables implicitly (hidden coupling). Components have explicit props, attribute bags, and
+slots.
 
 ## Use View Composers for Shared View Data
 
@@ -27,7 +29,7 @@ If every controller rendering a sidebar must pass `$categories`, that's duplicat
 A single view can return either the full page or just a fragment, keeping routing clean.
 
 ```php
-return view('dashboard', compact('users'))
+return view('Olfdashboard', compact('users'))
     ->fragmentIf($request->hasHeader('HX-Request'), 'user-list');
 ```
 

@@ -14,11 +14,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('exercise_muscle', function (Blueprint $table) {
-            //            $table->id();
+
             $table->foreignIdFor(Muscle::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Exercise::class)->constrained()->cascadeOnDelete();
             $table->enum('role', ['primary', 'secondary', 'stabilizer'])->default('primary');
-            //            $table->timestamps();
 
             $table->primary(['muscle_id', 'exercise_id']);
         });

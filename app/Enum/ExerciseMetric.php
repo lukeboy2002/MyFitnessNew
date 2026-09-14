@@ -12,4 +12,9 @@ enum ExerciseMetric: string
     case Cadence = 'cadence';
     case HeartRate = 'heart_rate';
     case Pace = 'pace';
+    case StrokeRate = 'stroke_rate';
+    case Rpm = 'rpm';
+    //    case Distance = 'distance';
+    //    case Duration = 'duration';
+    //    case Calories = 'calories';
 }

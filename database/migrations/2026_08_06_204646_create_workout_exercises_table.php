@@ -22,6 +22,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->index(['workout_id', 'order']);
+            $table->unique(['workout_id', 'exercise_id']);
         });
     }
 

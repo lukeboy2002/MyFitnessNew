@@ -12,7 +12,12 @@ use Illuminate\Support\Facades\Storage;
 use Spatie\Image\Enums\Fit;
 use Spatie\Image\Image;
 
-#[Fillable(['author', 'link', 'image_path', 'is_active'])]
+#[Fillable([
+    'author',
+    'link',
+    'image_path',
+    'is_active',
+])]
 class Carousel extends Model
 {
     public function saveItem(array $data, ?UploadedFile $image = null): void
@@ -67,11 +72,6 @@ class Carousel extends Model
         );
     }
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [

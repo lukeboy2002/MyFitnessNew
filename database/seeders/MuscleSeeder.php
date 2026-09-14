@@ -9,12 +9,8 @@ use Illuminate\Support\Str;
 
 class MuscleSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-
         $muscles = [
 
             'Neck' => [
@@ -23,13 +19,26 @@ class MuscleSeeder extends Seeder
 
             'Traps' => [
                 'Trapezius',
+            ],
+
+            'Upper Back' => [
                 'Levator scapulae',
+                'Rhomboideus',
+            ],
+
+            'Lats' => [
+                'Latissimus dorsi',
+                'Teres major',
+            ],
+
+            'Lower Back' => [
+                'Erector spinae',
+                'Multifidus',
             ],
 
             'Biceps' => [
                 'Biceps brachii',
                 'Brachialis',
-                'Brachioradialis',
             ],
 
             'Triceps' => [
@@ -60,18 +69,20 @@ class MuscleSeeder extends Seeder
                 'Pectoralis minor',
             ],
 
-            'Upper Back' => [
-                'Rhomboideus',
-                'Teres major',
+            'Forearm Flexors' => [
+                'Brachioradialis',
+                'Flexor carpi radialis',
+                'Flexor carpi ulnaris',
+                'Palmaris longus',
+                'Flexor digitorum superficialis',
+                'Flexor digitorum profundus',
             ],
 
-            'Lats' => [
-                'Latissimus dorsi',
-            ],
-
-            'Lower Back' => [
-                'Erector spinae',
-                'Multifidus',
+            'Forearm Extensors' => [
+                'Extensor carpi radialis longus',
+                'Extensor carpi radialis brevis',
+                'Extensor carpi ulnaris',
+                'Extensor digitorum',
             ],
 
             'Abs' => [
@@ -117,6 +128,9 @@ class MuscleSeeder extends Seeder
 
             'Hip Flexors' => [
                 'Iliopsoas',
+            ],
+
+            'Abductors' => [
                 'Tensor Fasciae Latae',
             ],
 
@@ -131,18 +145,20 @@ class MuscleSeeder extends Seeder
 
         foreach ($muscles as $group => $items) {
 
-            $muscleGroup = MuscleGroup::where('name', $group)->first();
+            $muscleGroup = MuscleGroup::where('name', $group)->firstOrFail();
 
             foreach ($items as $name) {
 
-                Muscle::create([
-                    'muscle_group_id' => $muscleGroup->id,
-                    'name' => $name,
-                    'slug' => Str::slug($name),
-                ]);
-
+                Muscle::updateOrCreate(
+                    [
+                        'slug' => Str::slug($name),
+                    ],
+                    [
+                        'muscle_group_id' => $muscleGroup->id,
+                        'name' => $name,
+                    ]
+                );
             }
         }
-
     }
 }

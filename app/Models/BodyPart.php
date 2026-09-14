@@ -13,12 +13,17 @@ use Illuminate\Support\Facades\Storage;
 use Spatie\Image\Enums\Fit;
 use Spatie\Image\Image;
 
-#[Fillable(['name', 'slug', 'image_path'])]
+#[Fillable([
+    'name',
+    'slug',
+    'image_path',
+])]
+
 class BodyPart extends Model
 {
     use HasFactory, Sluggable;
 
-    public function musclesGroups(): HasMany
+    public function muscleGroups(): HasMany
     {
         return $this->hasMany(MuscleGroup::class);
     }

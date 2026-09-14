@@ -79,10 +79,18 @@
     "Seat": "Zithoogte",
     "Grip": "Greep",
     "Rest time": "Rusttijd",
+    "Rest timer": "Rusttimer",
+    "Done": "Klaar",
+    "Reset": "Reset",
     "Total training time": "Totaal trainingstijd",
     "This exercise does not have a description yet. As an admin, you can add one for system exercises.": "Deze oefening heeft nog geen beschrijving. Als admin kun je er een toevoegen voor systeem oefeningen.",
     "No description available for this exercise.": "Geen beschrijving beschikbaar voor deze oefening.",
     "You do not have permission for this page.": "Je hebt geen toestemming voor deze.",
     "All watch details have been filled in!": "Alle horloge gegevens zijn ingevuld!",
-    "Nice job.": "Lekker bezig."
+    "Nice job.": "Lekker bezig.",
+    "Bodyparts": "Lichaamsdelen",
+    "All available bodyparts": "Alle beschikbare lichaamsdelen",
+    "Create bodypart": "Lichaamsdeel toevoegen",
+    "Update bodypart": "Lichaamsdeel bijwerken",
+    "Enter the details below for the bodypart.": "Voer hieronder de details in voor het lichaamsdeel."
 }

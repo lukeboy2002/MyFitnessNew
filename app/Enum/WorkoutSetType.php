@@ -8,4 +8,5 @@ enum WorkoutSetType: string
     case Working = 'working';
     case Drop = 'drop';
     case Failure = 'failure';
+    case Cooldown = 'cooldown';
 }
