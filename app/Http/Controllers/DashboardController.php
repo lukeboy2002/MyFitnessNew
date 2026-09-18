@@ -220,7 +220,7 @@ class DashboardController extends Controller
             ->where('user_id', $userId)
             ->count();
 
-        return view('dashboard', [
+        return view('dashboard.dashboard', [
             'activeSession' => $activeSession,
             'lastWorkout' => $lastWorkout,
             'workoutsThisWeek' => $workoutsThisWeek,
