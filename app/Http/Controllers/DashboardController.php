@@ -15,6 +15,21 @@ class DashboardController extends Controller
 
         /*
         |--------------------------------------------------------------------------
+        | Active Workout Session
+        |--------------------------------------------------------------------------
+        */
+
+        $activeSession = WorkoutSession::query()
+            ->where('user_id', $userId)
+            ->where('completed', false)
+            ->with([
+                'workout',
+            ])
+            ->latest('started_at')
+            ->first();
+
+        /*
+        |--------------------------------------------------------------------------
         | Last Workout
         |--------------------------------------------------------------------------
         */
@@ -194,27 +209,32 @@ class DashboardController extends Controller
         |--------------------------------------------------------------------------
         */
 
+        $myExercises = Exercise::query()
+            ->where('user_id', $userId)
+            ->with(['muscleGroups'])
+            ->latest()
+            ->take(5)
+            ->get();
+
         $myExercisesCount = Exercise::query()
             ->where('user_id', $userId)
             ->count();
 
         return view('dashboard', [
+            'activeSession' => $activeSession,
             'lastWorkout' => $lastWorkout,
-
             'workoutsThisWeek' => $workoutsThisWeek,
             'recentWorkouts' => $recentWorkouts,
             'totalSetsThisWeek' => $totalSetsThisWeek,
             'totalSecondsThisWeek' => $totalSecondsThisWeek,
             'totalTrainingTimeThisWeek' => $totalTrainingTimeThisWeek,
-
             'myExercisesCount' => $myExercisesCount,
-
+            'myExercises' => $myExercises,
             /*
              * Strength
              */
             'highestWeight' => $highestWeight,
             'mostReps' => $mostReps,
-
             /*
              * Cardio
              */

@@ -17,7 +17,7 @@
         'secondary' => 'p-4 bg-surface text-primary',
         'success' => 'p-4 bg-success text-primary',
         'danger' => 'p-4 bg-danger text-primary',
-        'warning' => 'p-4 bg-warning text-primary',
+        'warning' => 'p-4 bg-warning/50 text-primary border border-warning',
         'info' => 'p-4 bg-info text-primary',
     ];
 @endphp
@@ -25,7 +25,7 @@
 <div {{ $attributes->merge([
     'class' => 'rounded-lg shadow-sm shadow-surface-secondary ' . ($variants[$variant] ?? $variants['outline'])
 ]) }}>
-    <div class="flex flex-col  pb-1 mb-2">
+    <div class="flex flex-col">
         <div class="flex items-center gap-1">
             @if($icon)
                 <x-dynamic-component
