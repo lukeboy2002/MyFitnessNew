@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Enum\ExerciseMetric;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -68,40 +67,23 @@ class WorkoutSet extends Model
     protected function casts(): array
     {
         return [
-
-            /* Strength */
-            'reps' => 'integer',
             'weight' => 'decimal:2',
-
-            /* Cardio */
-            'duration_seconds' => 'integer',
             'distance_km' => 'decimal:2',
-            'metric' => ExerciseMetric::class,
-            'metric_value' => 'decimal:2',
-            'incline_percent' => 'decimal:1',
-
-            /* Calories */
-            'calories_total' => 'integer',
-            'calories_active' => 'integer',
-
-            /* Rowing */
-            'stroke_rate' => 'integer',
-            'pace_seconds' => 'integer',
-
-            /* Stairmaster */
-            'floors' => 'integer',
-
-            /* Bike */
-            'rotations' => 'integer',
+            'mets' => 'decimal:2',
+            'incline_percent' => 'decimal:2',
             'avg_speed' => 'decimal:2',
 
-            /* Machine */
-            'mets' => 'decimal:2',
+            'reps' => 'integer',
+            'duration_seconds' => 'integer',
+            'calories_total' => 'integer',
+            'calories_active' => 'integer',
             'watts' => 'integer',
+            'stroke_rate' => 'integer',
+            'pace_seconds' => 'integer',
+            'floors' => 'integer',
+            'rotations' => 'integer',
             'avg_heart_rate' => 'integer',
             'max_heart_rate' => 'integer',
-
-            /* General */
             'completed' => 'boolean',
         ];
     }

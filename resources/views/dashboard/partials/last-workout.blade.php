@@ -25,7 +25,7 @@
 
             <div class="mb-5">
                 <h3 class="text-lg font-semibold text-primary">
-                    {{ $lastWorkout->workout->name }}
+                    {{ $lastWorkout->workout?->name ?? 'Free Training' }}
                 </h3>
                 <p class="text-xs text-muted mt-1">
                     {{ $lastWorkout->completed_at->diffForHumans() }}
@@ -34,28 +34,30 @@
             {{-- Statistics --}}
             <div class="grid grid-cols-3 gap-3">
                 {{-- Duration --}}
-                <x-card.small variant="outline"
-                              icon="clock"
-                              title="{{ __('Duration') }}">
+                <x-card.small
+                    variant="outline"
+                    icon="clock"
+                    title="{{ __('Duration') }}">
                     <x-slot:description>
                         {{ $lastWorkout->formatted_duration }}
                     </x-slot:description>
                 </x-card.small>
+
                 {{-- Exercises --}}
-                <x-card.small variant="outline"
-                              icon="dumbbell"
-                              title="{{ __('Exercises') }}">
+                <x-card.small
+                    variant="outline"
+                    icon="dumbbell"
+                    title="{{ __('Exercises') }}">
                     <x-slot:description>
-                        {{ $lastWorkout
-                            ->workout
-                            ->workoutExercises
-                            ->count() }}
+                        {{ $lastWorkout->workout?->workoutExercises?->count() ?? 0 }}
                     </x-slot:description>
                 </x-card.small>
+
                 {{-- Completed Sets --}}
-                <x-card.small variant="outline"
-                              icon="check"
-                              title="{{ __('Sets') }}">
+                <x-card.small
+                    variant="outline"
+                    icon="check"
+                    title="{{ __('Sets') }}">
                     <x-slot:description>
                         {{ $lastWorkout
                             ->workoutSets

@@ -184,6 +184,57 @@ class CardioExercise extends Component
      * Previous session
      */
 
+    private function secondsToTime(
+        ?int $seconds
+    ): ?string {
+        if ($seconds === null) {
+            return null;
+        }
+
+        return sprintf(
+            '%d:%02d',
+            intdiv($seconds, 60),
+            $seconds % 60
+        );
+    }
+
+    /*
+     * Load workout set
+     */
+
+    private function completedSetsForExercise(
+        ?int $excludeSetId = null
+    ): Builder {
+        return WorkoutSet::query()
+            ->where('completed', true)
+            ->when(
+                $excludeSetId,
+                fn ($query) => $query->where(
+                    'id',
+                    '!=',
+                    $excludeSetId
+                )
+            )
+            ->whereHas(
+                'workoutSession',
+                fn ($query) => $query->where(
+                    'user_id',
+                    $this->session->user_id
+                )
+            )
+            ->whereHas(
+                'workoutExerciseSet.workoutExercise',
+                fn ($query) => $query->where(
+                    'exercise_id',
+                    $this->workoutExercise->exercise_id
+                )
+            );
+    }
+
+    /*
+     * Save results
+     */
+
     private function loadPreviousSessionSets(): void
     {
         $this->previousSessionSets = [];
@@ -226,7 +277,7 @@ class CardioExercise extends Component
     }
 
     /*
-     * Load workout set
+     * Complete exercise
      */
 
     private function loadWorkoutSet(
@@ -240,20 +291,27 @@ class CardioExercise extends Component
             $workoutSet->duration_seconds
         );
 
-        $this->distanceKm = $workoutSet->distance_km;
-
-        $this->caloriesTotal = $workoutSet->calories_total;
-
-        $this->caloriesActive = $workoutSet->calories_active;
-
-        $this->mets = $workoutSet->mets;
-
-        $this->watts = $workoutSet->watts;
-
-        $this->inclineDegrees = $workoutSet->incline_percent;
-
-        $this->strokeRate = $workoutSet->stroke_rate;
-
+        $this->distanceKm = $workoutSet->distance_km !== null
+            ? (float) $workoutSet->distance_km
+            : null;
+        $this->caloriesTotal = $workoutSet->calories_total !== null
+            ? (int) $workoutSet->calories_total
+            : null;
+        $this->caloriesActive = $workoutSet->calories_active !== null
+            ? (int) $workoutSet->calories_active
+            : null;
+        $this->mets = $workoutSet->mets !== null
+            ? (float) $workoutSet->mets
+            : null;
+        $this->watts = $workoutSet->watts !== null
+            ? (int) $workoutSet->watts
+            : null;
+        $this->inclineDegrees = $workoutSet->incline_percent !== null
+            ? (float) $workoutSet->incline_percent
+            : null;
+        $this->strokeRate = $workoutSet->stroke_rate !== null
+            ? (int) $workoutSet->stroke_rate
+            : null;
         $this->pace = $this->secondsToTime(
             $workoutSet->pace_seconds
         );
@@ -262,12 +320,15 @@ class CardioExercise extends Component
 
         $this->rotations = $workoutSet->rotations;
 
-        $this->avgSpeed = $workoutSet->avg_speed;
-
-        $this->avgHeartRate = $workoutSet->avg_heart_rate;
-
-        $this->maxHeartRate = $workoutSet->max_heart_rate;
-
+        $this->avgSpeed = $workoutSet->avg_speed !== null
+            ? (float) $workoutSet->avg_speed
+            : null;
+        $this->avgHeartRate = $workoutSet->avg_heart_rate !== null
+            ? (int) $workoutSet->avg_heart_rate
+            : null;
+        $this->maxHeartRate = $workoutSet->max_heart_rate !== null
+            ? (int) $workoutSet->max_heart_rate
+            : null;
         $this->splits = [];
 
         foreach ($workoutSet->splits as $split) {
@@ -282,9 +343,65 @@ class CardioExercise extends Component
         }
     }
 
+    public function completeExercise(): void
+    {
+        if ($this->completed) {
+            return;
+        }
+
+        $workoutSet = $this->currentWorkoutSet();
+
+        if (! $workoutSet) {
+            return;
+        }
+
+        /*
+         * Get previous completed sets BEFORE
+         * completing the current exercise.
+         */
+        $priorSets = $this
+            ->completedSetsForExercise(
+                $workoutSet->id
+            )
+            ->get();
+
+        $this->saveResults();
+
+        $workoutSet->refresh();
+
+        $prText = $this->determineNewPr(
+            $workoutSet,
+            $priorSets
+        );
+
+        $workoutSet->update([
+            'completed' => true,
+        ]);
+
+        $this->completed = true;
+
+        $this->highestScore = $this->getHighestScoreText();
+
+        if ($prText !== null) {
+            $this->showPr($prText);
+        }
+    }
+
     /*
-     * Save results
+     * Personal record detection
      */
+
+    private function currentWorkoutSet(): ?WorkoutSet
+    {
+        if (! $this->workoutSetId) {
+            return null;
+        }
+
+        return $this->currentSet ??=
+            WorkoutSet::find(
+                $this->workoutSetId
+            );
+    }
 
     public function saveResults(): void
     {
@@ -357,68 +474,75 @@ class CardioExercise extends Component
     }
 
     /*
-     * Complete exercise
+     * Splits
      */
 
-    public function completeExercise(): void
-    {
-        if ($this->completed) {
-            return;
+    private function timeToSeconds(
+        ?string $time
+    ): ?int {
+        if (
+            ! $time
+            || ! str_contains($time, ':')
+        ) {
+            return null;
         }
 
-        $workoutSet = $this->currentWorkoutSet();
+        $parts = explode(':', $time);
 
-        if (! $workoutSet) {
-            return;
+        if (count($parts) !== 2) {
+            return null;
         }
 
-        /*
-         * Get previous completed sets BEFORE
-         * completing the current exercise.
-         */
-        $priorSets = $this
-            ->completedSetsForExercise(
-                $workoutSet->id
-            )
-            ->get();
-
-        $this->saveResults();
-
-        $workoutSet->refresh();
-
-        $prText = $this->determineNewPr(
-            $workoutSet,
-            $priorSets
+        [$minutes, $seconds] = array_map(
+            'intval',
+            $parts
         );
 
-        $workoutSet->update([
-            'completed' => true,
-        ]);
-
-        $this->completed = true;
-
-        $this->highestScore = $this->getHighestScoreText();
-
-        if ($prText !== null) {
-            $this->showPr($prText);
+        if (
+            $minutes < 0
+            || $seconds < 0
+            || $seconds > 59
+        ) {
+            return null;
         }
+
+        return ($minutes * 60)
+            + $seconds;
     }
 
-    private function showPr(
-        string $prText
+    private function saveSplits(
+        WorkoutSet $workoutSet
     ): void {
-        $this->newHighScoreValue = $prText;
+        $workoutSet
+            ->splits()
+            ->delete();
 
-        $this->dispatch(
-            'open-modal',
-            'congratulations-pr-cardio-'
-            .$this->workoutExercise->id
-        );
+        foreach ($this->splits as $splitNumber => $split) {
+            if (
+                empty($split['distance'])
+                || empty($split['duration'])
+            ) {
+                continue;
+            }
+
+            $splitDurationSeconds = $this->timeToSeconds(
+                $split['duration']
+            );
+
+            if ($splitDurationSeconds === null) {
+                continue;
+            }
+
+            $workoutSet
+                ->splits()
+                ->create([
+                    'split_number' => (int) $splitNumber,
+                    'distance_km' => $split['distance'],
+                    'duration_seconds' => $splitDurationSeconds,
+                    'pace_seconds' => null,
+                ]);
+        }
     }
-
-    /*
-     * Personal record detection
-     */
 
     private function determineNewPr(
         WorkoutSet $set,
@@ -454,72 +578,21 @@ class CardioExercise extends Component
         return null;
     }
 
-    private function completedSetsForExercise(
-        ?int $excludeSetId = null
-    ): Builder {
-        return WorkoutSet::query()
-            ->where('completed', true)
-            ->when(
-                $excludeSetId,
-                fn ($query) => $query->where(
-                    'id',
-                    '!=',
-                    $excludeSetId
-                )
-            )
-            ->whereHas(
-                'workoutSession',
-                fn ($query) => $query->where(
-                    'user_id',
-                    $this->session->user_id
-                )
-            )
-            ->whereHas(
-                'workoutExerciseSet.workoutExercise',
-                fn ($query) => $query->where(
-                    'exercise_id',
-                    $this->workoutExercise->exercise_id
-                )
-            );
+    private function showPr(
+        string $prText
+    ): void {
+        $this->newHighScoreValue = $prText;
+
+        $this->dispatch(
+            'open-modal',
+            'congratulations-pr-cardio-'
+            .$this->workoutExercise->id
+        );
     }
 
     /*
-     * Splits
+     * Current workout set
      */
-
-    private function saveSplits(
-        WorkoutSet $workoutSet
-    ): void {
-        $workoutSet
-            ->splits()
-            ->delete();
-
-        foreach ($this->splits as $splitNumber => $split) {
-            if (
-                empty($split['distance'])
-                || empty($split['duration'])
-            ) {
-                continue;
-            }
-
-            $splitDurationSeconds = $this->timeToSeconds(
-                $split['duration']
-            );
-
-            if ($splitDurationSeconds === null) {
-                continue;
-            }
-
-            $workoutSet
-                ->splits()
-                ->create([
-                    'split_number' => (int) $splitNumber,
-                    'distance_km' => $split['distance'],
-                    'duration_seconds' => $splitDurationSeconds,
-                    'pace_seconds' => null,
-                ]);
-        }
-    }
 
     public function saveSplit(
         int $splitNumber
@@ -564,6 +637,10 @@ class CardioExercise extends Component
             );
     }
 
+    /*
+     * Time helpers
+     */
+
     public function addSplit(): void
     {
         $nextNumber = empty($this->splits)
@@ -599,73 +676,6 @@ class CardioExercise extends Component
         if ($workoutSet) {
             $this->saveSplits($workoutSet);
         }
-    }
-
-    /*
-     * Current workout set
-     */
-
-    private function currentWorkoutSet(): ?WorkoutSet
-    {
-        if (! $this->workoutSetId) {
-            return null;
-        }
-
-        return $this->currentSet ??=
-            WorkoutSet::find(
-                $this->workoutSetId
-            );
-    }
-
-    /*
-     * Time helpers
-     */
-
-    private function secondsToTime(
-        ?int $seconds
-    ): ?string {
-        if ($seconds === null) {
-            return null;
-        }
-
-        return sprintf(
-            '%d:%02d',
-            intdiv($seconds, 60),
-            $seconds % 60
-        );
-    }
-
-    private function timeToSeconds(
-        ?string $time
-    ): ?int {
-        if (
-            ! $time
-            || ! str_contains($time, ':')
-        ) {
-            return null;
-        }
-
-        $parts = explode(':', $time);
-
-        if (count($parts) !== 2) {
-            return null;
-        }
-
-        [$minutes, $seconds] = array_map(
-            'intval',
-            $parts
-        );
-
-        if (
-            $minutes < 0
-            || $seconds < 0
-            || $seconds > 59
-        ) {
-            return null;
-        }
-
-        return ($minutes * 60)
-            + $seconds;
     }
 
     public function render(): View

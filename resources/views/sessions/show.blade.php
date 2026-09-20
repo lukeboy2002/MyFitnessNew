@@ -1,10 +1,14 @@
 @use('App\Enum\ExerciseType')
 
 @php
-    $defaultRestSeconds = $session->workout->workoutExercises
-        ->flatMap->workoutExerciseSets
-        ->whereNotNull('rest_seconds')
-        ->first()?->rest_seconds ?? 60;
+    $workoutName = $session->workout_name;
+
+    $defaultRestSeconds = $session->workout
+        ? $session->workout->workoutExercises
+            ->flatMap->workoutExerciseSets
+            ->whereNotNull('rest_seconds')
+            ->first()?->rest_seconds ?? 60
+        : 60;
 @endphp
 
 <x-app-layout :pageTitle="__('Workout')">
@@ -15,7 +19,7 @@
                 <div class="mx-auto flex max-w-4xl items-center justify-between px-4 py-3">
                     {{-- Workout info --}}
                     <div class="min-w-0">
-                        <h1 class="truncate text-lg font-semibold text-primary">{{ $session->workout->name }}</h1>
+                        <h1 class="truncate text-lg font-semibold text-primary">{{ $session->workout_name }}</h1>
                         <p class="text-sm text-primary">{{ __('Workout') }}</p>
                     </div>
 
@@ -35,23 +39,59 @@
 
         {{-- Workout Content --}}
         <main class="mx-auto max-w-4xl space-y-4 px-4 py-6">
-            @foreach($session->workout->workoutExercises as $workoutExercise)
-                {{-- Strength --}}
-                @if($workoutExercise->exercise->type === ExerciseType::Strength)
-                    <livewire:sessions.strength-exercise
-                        :session="$session"
-                        :workout-exercise="$workoutExercise"
-                        :key="'strength-exercise-' . $session->id . '-' . $workoutExercise->id"
-                    />
-                    {{-- Cardio --}}
-                @elseif($workoutExercise->exercise->type === ExerciseType::Cardio)
-                    <livewire:sessions.cardio-exercise
-                        :session="$session"
-                        :workout-exercise="$workoutExercise"
-                        :key="'cardio-exercise-' . $session->id . '-' . $workoutExercise->id"
-                    />
-                @endif
-            @endforeach
+            {{--            @if($session->workout)--}}
+            {{--                @foreach($session->workout->workoutExercises as $workoutExercise)--}}
+            {{--                    @if($workoutExercise->exercise->type === ExerciseType::Strength)--}}
+            {{--                        <livewire:sessions.strength-exercise--}}
+            {{--                            :session="$session"--}}
+            {{--                            :workout-exercise="$workoutExercise"--}}
+            {{--                            :key="'strength-' . $workoutExercise->id"--}}
+            {{--                        />--}}
+            {{--                    @elseif($workoutExercise->exercise->type === ExerciseType::Cardio)--}}
+            {{--                        <livewire:sessions.cardio-exercise--}}
+            {{--                            :session="$session"--}}
+            {{--                            :workout-exercise="$workoutExercise"--}}
+            {{--                            :key="'cardio-' . $workoutExercise->id"--}}
+            {{--                        />--}}
+            {{--                    @endif--}}
+            {{--                @endforeach--}}
+            {{--            @else--}}
+            {{--                <livewire:sessions.free-training-exercises--}}
+            {{--                    :session="$session"--}}
+            {{--                    :key="'free-training-' . $session->id"--}}
+            {{--                />--}}
+            {{--            @endif--}}
+            @if($session->workout)
+
+                {{-- Bestaande normale workout --}}
+                @foreach($session->workout->workoutExercises as $workoutExercise)
+
+                    @if($workoutExercise->exercise->type === ExerciseType::Strength)
+                        <livewire:sessions.strength-exercise
+                            :session="$session"
+                            :workout-exercise="$workoutExercise"
+                            :key="'strength-' . $workoutExercise->id"
+                        />
+
+                    @elseif($workoutExercise->exercise->type === ExerciseType::Cardio)
+                        <livewire:sessions.cardio-exercise
+                            :session="$session"
+                            :workout-exercise="$workoutExercise"
+                            :key="'cardio-' . $workoutExercise->id"
+                        />
+                    @endif
+
+                @endforeach
+
+            @else
+
+                {{-- Free Training --}}
+                <livewire:sessions.free-training-exercises
+                    :session="$session"
+                    :key="'free-training-' . $session->id"
+                />
+
+            @endif
         </main>
 
         {{-- End Workout --}}

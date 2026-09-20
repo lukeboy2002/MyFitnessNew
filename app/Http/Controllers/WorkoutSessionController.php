@@ -16,6 +16,11 @@ class WorkoutSessionController extends Controller
      */
     public function start(Request $request): RedirectResponse
     {
+        if ($activeSession = $this->activeSession($request)) {
+            return redirect()
+                ->route('sessions.show', $activeSession)
+                ->with('warning', __('You already have an active workout.'));
+        }
 
         $request->validate([
             'workout_id' => [
@@ -72,6 +77,24 @@ class WorkoutSessionController extends Controller
                 ]);
             }
         }
+
+        return redirect()->route('sessions.show', $session);
+    }
+
+    public function startEmpty(Request $request): RedirectResponse
+    {
+        if ($activeSession = $this->activeSession($request)) {
+            return redirect()
+                ->route('sessions.show', $activeSession)
+                ->with('warning', __('You already have an active workout.'));
+        }
+
+        $session = WorkoutSession::create([
+            'user_id' => $request->user()->id,
+            'workout_id' => null,
+            'started_at' => now(),
+            'completed' => false,
+        ]);
 
         return redirect()->route('sessions.show', $session);
     }
@@ -139,5 +162,14 @@ class WorkoutSessionController extends Controller
         ]);
 
         return view('sessions.summary', compact('session'));
+    }
+
+    private function activeSession(Request $request): ?WorkoutSession
+    {
+        return WorkoutSession::query()
+            ->where('user_id', $request->user()->id)
+            ->where('completed', false)
+            ->latest('id')
+            ->first();
     }
 }

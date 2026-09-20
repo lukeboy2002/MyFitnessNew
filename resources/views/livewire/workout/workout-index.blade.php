@@ -1,3 +1,10 @@
+@php
+    $activeSession = auth()->user()?->workoutSessions()
+        ->where('completed', false)
+        ->latest('id')
+        ->first();
+@endphp
+
 <div class="px-4 pt-6">
     <x-card variant="ghost" title="{{ __('Workouts') }}" description="{{ __('All your workouts') }}">
 
@@ -16,6 +23,7 @@
             @if ($active->isNotEmpty())
                 <div class="space-y-3 mb-8">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
                         @foreach ($active as $workout)
                             <x-card.default>
                                 <div>
@@ -24,8 +32,8 @@
 
                                         <form method="POST" action="{{ route('sessions.start') }}">
                                             @csrf
-                                            <input type="hidden" name="workout_id" value="{{ $workout->id }}">
 
+                                            <input type="hidden" name="workout_id" value="{{ $workout->id }}">
                                             <button type="submit"
                                                     class="flex justify-between items-center w-full text-left">
                                                 <div class="flex flex-col space-y-2 w-full">
@@ -43,6 +51,7 @@
                                                 </div>
                                             </button>
                                         </form>
+
                                     </div>
                                     <div class="flex border-t border-border divide-x divide-border -mx-4 -mb-4">
                                         <x-button.default variant="ghost"

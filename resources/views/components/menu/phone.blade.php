@@ -2,9 +2,16 @@
     $navItems = [
         ['route' => 'dashboard',        'icon' => 'house', 'label' => 'Home'],
         ['route' => 'exercises.index',  'icon' => 'activity', 'label' => __('Exercises')],
-        ['route' => 'workout.index',   'icon' => 'layers', 'label' => 'Workouts'],
-        ['route' => 'profile.index', 'icon' => 'user', 'label' => 'Profile'],
+        ['route' => 'workout.index',   'icon' => 'layers', 'label' => __('Workouts')],
+        ['route' => 'profile.index', 'icon' => 'user', 'label' => __('Profile')],
     ]
+@endphp
+
+@php
+    $activeSession = auth()->user()?->workoutSessions()
+        ->where('completed', false)
+        ->latest('id')
+        ->first();
 @endphp
 
 <nav
@@ -22,4 +29,21 @@
             <span>{{ $item['label'] }}</span>
         </a>
     @endforeach
+    <div
+        class="flex-1 flex flex-col items-center justify-center py-2 gap-0.5 min-h-14
+                      text-xs font-medium transition-colors">
+    </div>
+    @if (! $activeSession)
+        <form method="POST" action="{{ route('sessions.start-empty') }}" class="relative">
+            @csrf
+
+
+            <button
+                class="absolute -top-5 right-5 bg-secondary min-h-12 min-w-12 rounded-full text-primary flex items-center justify-center">
+                <x-lucide-play class="h-6 w-6"/>
+
+            </button>
+
+        </form>
+    @endif
 </nav>

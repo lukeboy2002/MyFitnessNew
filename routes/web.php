@@ -35,6 +35,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('exercises/{exercise:slug}', ExercisesShow::class)->name('exercises.show');
 
     Route::post('/sessions/start', [WorkoutSessionController::class, 'start'])->name('sessions.start');
+    Route::post('/sessions/start-empty', [WorkoutSessionController::class, 'startEmpty'])->name('sessions.start-empty');
     Route::get('/sessions/{session}', [WorkoutSessionController::class, 'show'])->name('sessions.show');
     Route::patch('/sessions/{session}/complete', [WorkoutSessionController::class, 'complete'])->name('sessions.complete');
     Route::get('/sessions/{session}/summary', [WorkoutSessionController::class, 'summary'])->name('sessions.summary');
