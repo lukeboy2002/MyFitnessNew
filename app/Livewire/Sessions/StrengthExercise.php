@@ -48,7 +48,12 @@ class StrengthExercise extends Component
             $workoutSet = WorkoutSet::query()
                 ->where('workout_session_id', $this->session->id)
                 ->where('workout_exercise_set_id', $templateSet->id)
-                ->first();
+                ->first()
+                ?? WorkoutSet::create([
+                    'workout_session_id' => $this->session->id,
+                    'workout_exercise_set_id' => $templateSet->id,
+                    'completed' => false,
+                ]);
 
             $this->sets[$templateSet->id] = [
                 'workout_set_id' => $workoutSet?->id,

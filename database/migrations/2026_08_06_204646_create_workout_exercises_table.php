@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('workout_exercises', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Workout::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Workout::class)->nullable()->constrained()->nullOnDelete();
             $table->foreignIdFor(Exercise::class)->constrained()->cascadeOnDelete();
             $table->integer('order')->default(0);
             $table->text('notes')->nullable();

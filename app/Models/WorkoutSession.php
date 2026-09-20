@@ -33,6 +33,17 @@ class WorkoutSession extends Model
         return $this->hasMany(WorkoutSet::class);
     }
 
+    public function workoutSessionExercises(): HasMany
+    {
+        return $this->hasMany(WorkoutSessionExercise::class)
+            ->orderBy('order');
+    }
+
+    public function getWorkoutNameAttribute(): string
+    {
+        return $this->workout?->name ?? 'Free Training';
+    }
+
     /** Workout duration in seconds. */
     public function getDurationInSecondsAttribute(): int
     {

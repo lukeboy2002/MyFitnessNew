@@ -87,7 +87,7 @@
                             class="text-2xl md:text-3xl
                             font-bold text-primary"
                         >
-                            {{ $session->workout->name }}
+                            {{ $session->workout?->name ?? 'Free Training' }}
                         </h1>
 
                     </div>
@@ -896,7 +896,7 @@
             >
                 {{ __('Dashboard') }}
             </x-link.default>
-            
+
         </div>
 
     </div>

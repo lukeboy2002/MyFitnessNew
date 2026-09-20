@@ -10,6 +10,7 @@ use App\Models\Exercise;
 use App\Models\MuscleGroup;
 use App\Models\Workout;
 use App\Models\WorkoutExerciseSet;
+use App\Services\WorkoutExerciseService;
 use Cviebrock\EloquentSluggable\Services\SlugService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Storage;
@@ -104,25 +105,21 @@ class WorkoutForm extends Component
     }
 
     //    Exercises
-    public function addExercise(int $exerciseId): void
-    {
-        if (! $this->workout?->exists) {
-            return;
-        }
-
+    public function addExercise(
+        int $exerciseId,
+        WorkoutExerciseService $workoutExerciseService
+    ): void {
         $this->authorize('update', $this->workout);
 
         $exercise = Exercise::visibleTo()
             ->findOrFail($exerciseId);
 
-        $exists = $this->workout
-            ->workoutExercises()
-            ->where('exercise_id', $exercise->id)
-            ->exists();
-
-        if ($exists) {
-            flash()->warning(__('This exercise is already added to the workout'));
-
+        if (
+            $this->workout
+                ->workoutExercises()
+                ->where('exercise_id', $exercise->id)
+                ->exists()
+        ) {
             return;
         }
 
@@ -132,59 +129,16 @@ class WorkoutForm extends Component
                 ->max('order') ?? 0
         ) + 1;
 
-        $workoutExercise = $this->workout
-            ->workoutExercises()
-            ->create([
-                'exercise_id' => $exercise->id,
-                'order' => $nextOrder,
-            ]);
+        $workoutExerciseService->create(
+            exercise: $exercise,
+            workoutId: $this->workout->id,
+            order: $nextOrder,
+        );
 
-        //        Cardio default
-        if ($exercise->type === ExerciseType::Cardio) {
-            $workoutExercise
-                ->workoutExerciseSets()
-                ->create([
-                    'set_number' => 1,
-                    'type' => WorkoutSetType::Working,
-                    // Strength
-                    'target_reps' => null,
-                    'target_weight' => null,
-                    'rest_seconds' => null,
-                    // Cardio
-                    'target_duration_seconds' => 1200,
-                    'target_distance_km' => null,
-
-                    'target_metric' => null,
-                    'target_metric_value' => null,
-
-                    'target_incline_percent' => null,
-                ]);
-        } else {
-            //  Strength default
-            for ($i = 1; $i <= 3; $i++) {
-                $workoutExercise
-                    ->workoutExerciseSets()
-                    ->create([
-                        'set_number' => $i,
-                        'type' => WorkoutSetType::Working,
-                        // Strength
-                        'target_reps' => 10,
-                        'target_weight' => null,
-                        'rest_seconds' => 60,
-                        // Cardio
-                        'target_duration_seconds' => null,
-                        'target_distance_km' => null,
-
-                        'target_metric' => null,
-                        'target_metric_value' => null,
-
-                        'target_incline_percent' => null,
-                    ]);
-            }
-        }
-
-        flash()->success(__('Exercise added to workout'));
-        $this->dispatch('close-modal', 'add-exercise-modal');
+        $this->dispatch(
+            'close-modal',
+            'add-exercise-modal'
+        );
     }
 
     public function deleteExercise(int $workoutExerciseId): void

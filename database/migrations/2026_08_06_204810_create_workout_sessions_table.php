@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('workout_sessions', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(Workout::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Workout::class)->nullable()->constrained()->nullOnDelete();
             $table->timestamp('started_at');
             $table->timestamp('completed_at')->nullable();
             $table->boolean('completed')->default(false);

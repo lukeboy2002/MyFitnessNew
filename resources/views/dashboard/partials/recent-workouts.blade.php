@@ -31,7 +31,7 @@
                         <div class="min-w-0">
                             {{-- Workout Name --}}
                             <p class="font-medium text-sm text-primary truncate">
-                                {{ $session->workout->name }}
+                                {{ $session->workout->name ?? 'Free Training' }}
                             </p>
                             {{-- Date --}}
                             <p class="text-xs text-muted mt-0.5">
