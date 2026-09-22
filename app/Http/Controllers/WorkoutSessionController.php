@@ -38,9 +38,7 @@ class WorkoutSessionController extends Controller
             ->with(['workoutExercises.workoutExerciseSets'])
             ->firstOrFail();
 
-        /*
-         * Create the workout session.
-         */
+        /* Create the workout session. */
         $session = WorkoutSession::create([
             'user_id' => $request->user()->id,
             'workout_id' => $workout->id,
@@ -81,6 +79,15 @@ class WorkoutSessionController extends Controller
         return redirect()->route('sessions.show', $session);
     }
 
+    private function activeSession(Request $request): ?WorkoutSession
+    {
+        return WorkoutSession::query()
+            ->where('user_id', $request->user()->id)
+            ->where('completed', false)
+            ->latest('id')
+            ->first();
+    }
+
     public function startEmpty(Request $request): RedirectResponse
     {
         if ($activeSession = $this->activeSession($request)) {
@@ -99,12 +106,9 @@ class WorkoutSessionController extends Controller
         return redirect()->route('sessions.show', $session);
     }
 
-    /**
-     * Show a workout session.
-     */
+    /* Show a workout session. */
     public function show(WorkoutSession $session): View
     {
-
         abort_unless(
             $session->user_id === auth()->id(),
             403
@@ -128,7 +132,6 @@ class WorkoutSessionController extends Controller
 
     public function complete(WorkoutSession $session): RedirectResponse
     {
-
         abort_unless(
             $session->user_id === auth()->id(),
             403
@@ -139,9 +142,7 @@ class WorkoutSessionController extends Controller
             return redirect()->route('sessions.show', $session);
         }
 
-        /*
-         * Complete session.
-         */
+        /* Complete session. */
         $session->update([
             'completed' => true,
             'completed_at' => now(),
@@ -162,14 +163,5 @@ class WorkoutSessionController extends Controller
         ]);
 
         return view('sessions.summary', compact('session'));
-    }
-
-    private function activeSession(Request $request): ?WorkoutSession
-    {
-        return WorkoutSession::query()
-            ->where('user_id', $request->user()->id)
-            ->where('completed', false)
-            ->latest('id')
-            ->first();
     }
 }

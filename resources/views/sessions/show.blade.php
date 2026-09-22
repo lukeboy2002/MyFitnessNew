@@ -39,28 +39,6 @@
 
         {{-- Workout Content --}}
         <main class="mx-auto max-w-4xl space-y-4 px-4 py-6">
-            {{--            @if($session->workout)--}}
-            {{--                @foreach($session->workout->workoutExercises as $workoutExercise)--}}
-            {{--                    @if($workoutExercise->exercise->type === ExerciseType::Strength)--}}
-            {{--                        <livewire:sessions.strength-exercise--}}
-            {{--                            :session="$session"--}}
-            {{--                            :workout-exercise="$workoutExercise"--}}
-            {{--                            :key="'strength-' . $workoutExercise->id"--}}
-            {{--                        />--}}
-            {{--                    @elseif($workoutExercise->exercise->type === ExerciseType::Cardio)--}}
-            {{--                        <livewire:sessions.cardio-exercise--}}
-            {{--                            :session="$session"--}}
-            {{--                            :workout-exercise="$workoutExercise"--}}
-            {{--                            :key="'cardio-' . $workoutExercise->id"--}}
-            {{--                        />--}}
-            {{--                    @endif--}}
-            {{--                @endforeach--}}
-            {{--            @else--}}
-            {{--                <livewire:sessions.free-training-exercises--}}
-            {{--                    :session="$session"--}}
-            {{--                    :key="'free-training-' . $session->id"--}}
-            {{--                />--}}
-            {{--            @endif--}}
             @if($session->workout)
 
                 {{-- Bestaande normale workout --}}

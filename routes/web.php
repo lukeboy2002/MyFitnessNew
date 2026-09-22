@@ -15,6 +15,7 @@ use App\Livewire\Muscle\MuscleForm;
 use App\Livewire\Muscle\MuscleIndex;
 use App\Livewire\Musclegroups\MusclegroupForm;
 use App\Livewire\Musclegroups\MusclegroupIndex;
+use App\Livewire\Workout\WorkoutCalendar;
 use App\Livewire\Workout\WorkoutForm;
 use App\Livewire\Workout\WorkoutIndex;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +29,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/workout', WorkoutIndex::class)->name('workout.index');
     Route::get('/workout/create', WorkoutForm::class)->name('workout.create');
     Route::get('/workout/{workout}/edit', WorkoutForm::class)->name('workout.edit');
+    Route::get('/workout/calendar', WorkoutCalendar::class)->name('workout.calendar');
 
     Route::get('exercises', ExercisesIndex::class)->name('exercises.index');
     Route::get('exercises/create', ExercisesForm::class)->name('exercises.create');

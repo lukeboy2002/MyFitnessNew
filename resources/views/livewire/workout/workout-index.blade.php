@@ -1,10 +1,3 @@
-@php
-    $activeSession = auth()->user()?->workoutSessions()
-        ->where('completed', false)
-        ->latest('id')
-        ->first();
-@endphp
-
 <div class="px-4 pt-6">
     <x-card variant="ghost" title="{{ __('Workouts') }}" description="{{ __('All your workouts') }}">
 

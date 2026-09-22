@@ -14,20 +14,13 @@ class PersonalRecordsController extends Controller
 
         $workoutSets = WorkoutSet::query()
             ->where('completed', true)
-
             ->whereHas(
                 'workoutSession',
                 fn ($query) => $query
                     ->where('user_id', $userId)
                     ->where('completed', true)
             )
-
-            ->with([
-                'workoutSession',
-
-                'workoutExerciseSet.workoutExercise.exercise',
-            ])
-
+            ->with(['workoutSession', 'workoutExerciseSet.workoutExercise.exercise'])
             ->get();
 
         $personalRecords = $workoutSets
@@ -37,7 +30,6 @@ class PersonalRecordsController extends Controller
                     ?->workoutExercise
                     ?->exercise
             )
-
             ->groupBy(
                 fn (WorkoutSet $set) => $set
                     ->workoutExerciseSet
@@ -45,9 +37,7 @@ class PersonalRecordsController extends Controller
                     ->exercise
                     ->id
             )
-
             ->map(function ($sets) {
-
                 $exercise = $sets
                     ->first()
                     ->workoutExerciseSet
@@ -56,52 +46,38 @@ class PersonalRecordsController extends Controller
 
                 return [
                     'exercise' => $exercise,
-
                     'highest_weight' => $sets
                         ->whereNotNull('weight')
                         ->sortByDesc('weight')
                         ->first(),
-
                     'most_reps' => $sets
                         ->whereNotNull('reps')
                         ->sortByDesc('reps')
                         ->first(),
-
                     'longest_duration' => $sets
                         ->whereNotNull('duration_seconds')
                         ->sortByDesc('duration_seconds')
                         ->first(),
-
                     'longest_distance' => $sets
                         ->whereNotNull('distance_km')
                         ->sortByDesc('distance_km')
                         ->first(),
-
                     'most_calories' => $sets
                         ->whereNotNull('calories_total')
                         ->sortByDesc('calories_total')
                         ->first(),
                 ];
             })
-
             ->sortBy(
                 fn (array $record) => $record['exercise']->name
             )
-
             ->values();
 
-        return view(
-            'personal-records.index',
-            compact('personalRecords')
-        );
+        return view('personal-records.index', compact('personalRecords'));
     }
 
-    public function show(
-        Exercise $exercise
-    ): View {
-        return view(
-            'personal-records.show',
-            compact('exercise')
-        );
+    public function show(Exercise $exercise): View
+    {
+        return view('personal-records.show', compact('exercise'));
     }
 }
