@@ -13,33 +13,19 @@ class DashboardController extends Controller
     {
         $userId = auth()->id();
 
-        /*
-        |--------------------------------------------------------------------------
-        | Active Workout Session
-        |--------------------------------------------------------------------------
-        */
-
+        /* Active Workout Session */
         $activeSession = WorkoutSession::query()
             ->where('user_id', $userId)
             ->where('completed', false)
-            ->with([
-                'workout',
-            ])
+            ->with(['workout'])
             ->latest('started_at')
             ->first();
 
-        /*
-        |--------------------------------------------------------------------------
-        | Last Workout
-        |--------------------------------------------------------------------------
-        */
-
+        /* Last Workout */
         $lastWorkout = WorkoutSession::query()
             ->where('user_id', $userId)
             ->where('completed', true)
-            ->with([
-                'workout.workoutExercises',
-            ])
+            ->with(['workout.workoutExercises'])
             ->withCount([
                 'workoutSets as completed_sets_count' => function ($query) {
                     $query->where('completed', true);
@@ -48,12 +34,7 @@ class DashboardController extends Controller
             ->latest('completed_at')
             ->first();
 
-        /*
-        |--------------------------------------------------------------------------
-        | This Week
-        |--------------------------------------------------------------------------
-        */
-
+        /* This Week */
         $thisWeekSessions = WorkoutSession::query()
             ->where('user_id', $userId)
             ->where('completed', true)
@@ -63,26 +44,14 @@ class DashboardController extends Controller
             ])
             ->get();
 
-        /*
-        |--------------------------------------------------------------------------
-        | Workouts this week
-        |--------------------------------------------------------------------------
-        */
-
+        /* Workouts this week */
         $workoutsThisWeek = $thisWeekSessions->count();
 
-        /*
-        |--------------------------------------------------------------------------
-        | Recent Workouts
-        |--------------------------------------------------------------------------
-        */
-
+        /* Recent Workouts */
         $recentWorkouts = WorkoutSession::query()
             ->where('user_id', $userId)
             ->where('completed', true)
-            ->with([
-                'workout',
-            ])
+            ->with(['workout'])
             ->withCount([
                 'workoutSets as completed_sets_count' => function ($query) {
                     $query->where('completed', true);
@@ -92,16 +61,11 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        /*
-        |--------------------------------------------------------------------------
-        | Personal Records
-        |--------------------------------------------------------------------------
-        */
+        /* Personal Records */
 
         $completedWorkoutSets = WorkoutSet::query()
             ->where('completed', true)
-            ->whereHas(
-                'workoutSession',
+            ->whereHas('workoutSession',
                 fn ($query) => $query
                     ->where('user_id', $userId)
                     ->where('completed', true)
@@ -111,12 +75,7 @@ class DashboardController extends Controller
                 'workoutExerciseSet.workoutExercise.exercise',
             ]);
 
-        /*
-        |--------------------------------------------------------------------------
-        | Strength Records
-        |--------------------------------------------------------------------------
-        */
-
+        /* Strength Records */
         $highestWeight = (clone $completedWorkoutSets)
             ->where('weight', '>', 0)
             ->orderByDesc('weight')
@@ -127,12 +86,7 @@ class DashboardController extends Controller
             ->orderByDesc('reps')
             ->first();
 
-        /*
-        |--------------------------------------------------------------------------
-        | Cardio Records
-        |--------------------------------------------------------------------------
-        */
-
+        /* Cardio Records */
         $longestDuration = (clone $completedWorkoutSets)
             ->where('duration_seconds', '>', 0)
             ->orderByDesc('duration_seconds')
@@ -148,12 +102,7 @@ class DashboardController extends Controller
             ->orderByDesc('calories_total')
             ->first();
 
-        /*
-        |--------------------------------------------------------------------------
-        | Completed sets this week
-        |--------------------------------------------------------------------------
-        */
-
+        /* Completed sets this week */
         $totalSetsThisWeek = WorkoutSession::query()
             ->where('user_id', $userId)
             ->where('completed', true)
@@ -169,19 +118,10 @@ class DashboardController extends Controller
             ->get()
             ->sum('completed_sets_count');
 
-        /*
-        |--------------------------------------------------------------------------
-        | Total training time this week
-        |--------------------------------------------------------------------------
-        */
-
+        /* Total training time this week */
         $totalSecondsThisWeek = $thisWeekSessions
             ->sum(function (WorkoutSession $session) {
-
-                if (
-                    ! $session->started_at ||
-                    ! $session->completed_at
-                ) {
+                if (! $session->started_at || ! $session->completed_at) {
                     return 0;
                 }
 
@@ -203,12 +143,8 @@ class DashboardController extends Controller
         $totalTrainingTimeThisWeek = $hours > 0
             ? $hours.'h '.$minutes.'m'
             : $minutes.' min';
-        /*
-        |--------------------------------------------------------------------------
-        | My Exercises
-        |--------------------------------------------------------------------------
-        */
 
+        /* My Exercises */
         $myExercises = Exercise::query()
             ->where('user_id', $userId)
             ->with(['muscleGroups'])
@@ -230,14 +166,10 @@ class DashboardController extends Controller
             'totalTrainingTimeThisWeek' => $totalTrainingTimeThisWeek,
             'myExercisesCount' => $myExercisesCount,
             'myExercises' => $myExercises,
-            /*
-             * Strength
-             */
+            /* Strength */
             'highestWeight' => $highestWeight,
             'mostReps' => $mostReps,
-            /*
-             * Cardio
-             */
+            /* Cardio */
             'longestDuration' => $longestDuration,
             'longestDistance' => $longestDistance,
             'mostCalories' => $mostCalories,

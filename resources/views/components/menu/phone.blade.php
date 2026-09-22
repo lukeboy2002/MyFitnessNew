@@ -1,7 +1,6 @@
 @php
     $navItems = [
         ['route' => 'dashboard',        'icon' => 'house', 'label' => 'Home'],
-        ['route' => 'exercises.index',  'icon' => 'activity', 'label' => __('Exercises')],
         ['route' => 'workout.index',   'icon' => 'layers', 'label' => __('Workouts')],
         ['route' => 'profile.index', 'icon' => 'user', 'label' => __('Profile')],
     ]
@@ -29,6 +28,54 @@
             <span>{{ $item['label'] }}</span>
         </a>
     @endforeach
+    <div
+        x-data="{ open: false }"
+        @click.outside="open = false"
+        @keydown.escape.window="open = false"
+        class="relative flex-1 flex flex-col items-center justify-center min-h-14">
+
+        <button
+            type="button"
+            @click="open = !open"
+            class="flex flex-col items-center justify-center py-2 gap-0.5 w-full h-full
+               text-xs font-medium text-primary hover:text-secondary transition-colors">
+
+            <x-lucide-ellipsis class="w-6 h-6"/>
+            <span>{{ __('More') }}</span>
+        </button>
+
+        <div
+            x-cloak
+            x-show="open"
+            x-transition
+            class="absolute bottom-full right-0 mb-2 w-52 rounded-2xl border border-border
+               bg-surface p-2 shadow-xl">
+
+            <a
+                href="{{ route('exercises.index') }}"
+                @click="open = false"
+                class="flex items-center gap-3 rounded-xl px-3 py-2.5
+                   text-sm text-primary hover:bg-surface-secondary
+                   hover:text-secondary transition-colors">
+
+                <x-lucide-activity class="w-5 h-5"/>
+                <span>{{ __('Exercises') }}</span>
+            </a>
+
+            <a
+                href="{{ route('workout.calendar') }}"
+                @click="open = false"
+                class="flex items-center gap-3 rounded-xl px-3 py-2.5
+                   text-sm text-primary hover:bg-surface-secondary
+                   hover:text-secondary transition-colors">
+
+                <x-lucide-calendar-days class="w-5 h-5"/>
+                <span>{{ __('Calendar') }}</span>
+            </a>
+
+
+        </div>
+    </div>
     <div
         class="flex-1 flex flex-col items-center justify-center py-2 gap-0.5 min-h-14
                       text-xs font-medium transition-colors">
