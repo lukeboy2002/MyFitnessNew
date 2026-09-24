@@ -37,7 +37,7 @@ class UpdateAvatar extends Component
 
         $this->reset('avatar');
         $this->dispatch('avatar-updated');
-        $this->redirect(route('profile.edit'), navigate: true);
+        $this->redirect(route('profile.index'), navigate: true);
     }
 
     public function render()
