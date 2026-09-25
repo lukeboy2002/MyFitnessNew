@@ -11,6 +11,7 @@
         </p>
 
         <div class="flex flex-col gap-6 w-full mt-6">
+            <livewire:muscle.muscle-progress/>
             @include('dashboard.partials.active-session')
             <div class="flex flex-col md:flex-row justify-between gap-6 w-full">
                 @include('dashboard.partials.last-workout')
