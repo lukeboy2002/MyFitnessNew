@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire\Sessions;
 
 use App\Models\WorkoutExercise;
+use App\Models\WorkoutExerciseSet;
 use App\Models\WorkoutSession;
 use App\Models\WorkoutSet;
 use Illuminate\Contracts\View\View;
@@ -124,7 +125,7 @@ class CardioExercise extends Component
 
         $workoutSet->loadMissing('splits');
 
-        $this->loadWorkoutSet($workoutSet);
+        $this->loadWorkoutSet($workoutSet, $templateSet);
     }
 
     /*
@@ -187,14 +188,27 @@ class CardioExercise extends Component
     private function secondsToTime(
         ?int $seconds
     ): ?string {
-        if ($seconds === null) {
+        if ($seconds === null || $seconds <= 0) {
             return null;
         }
 
+        $hours = intdiv($seconds, 3600);
+        $minutes = intdiv($seconds % 3600, 60);
+        $secs = $seconds % 60;
+
+        if ($hours > 0) {
+            return sprintf(
+                '%d:%02d:%02d',
+                $hours,
+                $minutes,
+                $secs
+            );
+        }
+
         return sprintf(
-            '%d:%02d',
-            intdiv($seconds, 60),
-            $seconds % 60
+            '%02d:%02d',
+            $minutes,
+            $secs
         );
     }
 
@@ -281,19 +295,25 @@ class CardioExercise extends Component
      */
 
     private function loadWorkoutSet(
-        WorkoutSet $workoutSet
+        WorkoutSet $workoutSet,
+        ?WorkoutExerciseSet $templateSet = null
     ): void {
+        $templateSet ??= $this->workoutExercise
+            ->workoutExerciseSets
+            ->firstWhere('id', $workoutSet->workout_exercise_set_id)
+            ?? $this->workoutExercise->workoutExerciseSets->first();
+
         $this->workoutSetId = $workoutSet->id;
 
         $this->completed = $workoutSet->completed;
 
         $this->duration = $this->secondsToTime(
-            $workoutSet->duration_seconds
+            $workoutSet->duration_seconds ?? $templateSet?->target_duration_seconds
         );
 
         $this->distanceKm = $workoutSet->distance_km !== null
             ? (float) $workoutSet->distance_km
-            : null;
+            : ($templateSet?->target_distance_km !== null ? (float) $templateSet->target_distance_km : null);
         $this->caloriesTotal = $workoutSet->calories_total !== null
             ? (int) $workoutSet->calories_total
             : null;
@@ -308,7 +328,7 @@ class CardioExercise extends Component
             : null;
         $this->inclineDegrees = $workoutSet->incline_percent !== null
             ? (float) $workoutSet->incline_percent
-            : null;
+            : ($templateSet?->target_incline_percent !== null ? (float) $templateSet->target_incline_percent : null);
         $this->strokeRate = $workoutSet->stroke_rate !== null
             ? (int) $workoutSet->stroke_rate
             : null;
@@ -411,9 +431,14 @@ class CardioExercise extends Component
             return;
         }
 
+        $templateSet = $this->workoutExercise
+            ->workoutExerciseSets
+            ->firstWhere('id', $workoutSet->workout_exercise_set_id)
+            ?? $this->workoutExercise->workoutExerciseSets->first();
+
         $durationSeconds = $this->timeToSeconds(
             $this->duration
-        );
+        ) ?? ($workoutSet->duration_seconds ?: $templateSet?->target_duration_seconds);
 
         $paceSeconds = $this->timeToSeconds(
             $this->pace
@@ -427,7 +452,7 @@ class CardioExercise extends Component
 
         $workoutSet->update([
             'duration_seconds' => $durationSeconds,
-            'distance_km' => $this->distanceKm ?: null,
+            'distance_km' => $this->distanceKm ?: ($workoutSet->distance_km ?: ($templateSet?->target_distance_km !== null ? (float) $templateSet->target_distance_km : null)),
 
             'mets' => $this->mets ?: null,
             'watts' => $this->watts ?: null,
@@ -435,7 +460,7 @@ class CardioExercise extends Component
             'calories_total' => $this->caloriesTotal ?: null,
             'calories_active' => $this->caloriesActive ?: null,
 
-            'incline_percent' => $this->inclineDegrees ?: null,
+            'incline_percent' => $this->inclineDegrees ?: ($workoutSet->incline_percent ?: ($templateSet?->target_incline_percent !== null ? (float) $templateSet->target_incline_percent : null)),
             'stroke_rate' => $this->strokeRate ?: null,
 
             'pace_seconds' => $paceSeconds,
@@ -480,34 +505,82 @@ class CardioExercise extends Component
     private function timeToSeconds(
         ?string $time
     ): ?int {
-        if (
-            ! $time
-            || ! str_contains($time, ':')
-        ) {
+        if ($time === null) {
             return null;
         }
 
-        $parts = explode(':', $time);
+        $time = trim($time);
 
-        if (count($parts) !== 2) {
+        if ($time === '') {
             return null;
         }
 
-        [$minutes, $seconds] = array_map(
-            'intval',
-            $parts
-        );
+        if (preg_match('/^(?:(\d+)\s*(?:h|u|uur|hour|hours))?\s*(?:(\d+)\s*(?:m|min|minuten|minute|minutes))?\s*(?:(\d+)\s*(?:s|sec|seconden|seconds?))?$/i', strtolower($time), $matches)) {
+            $h = isset($matches[1]) && $matches[1] !== '' ? (int) $matches[1] : 0;
+            $m = isset($matches[2]) && $matches[2] !== '' ? (int) $matches[2] : 0;
+            $s = isset($matches[3]) && $matches[3] !== '' ? (int) $matches[3] : 0;
 
-        if (
-            $minutes < 0
-            || $seconds < 0
-            || $seconds > 59
-        ) {
+            if ($h > 0 || $m > 0 || $s > 0) {
+                return ($h * 3600) + ($m * 60) + $s;
+            }
+        }
+
+        if (str_contains($time, ':')) {
+            $parts = explode(':', $time);
+
+            if (count($parts) === 2) {
+                [$minutes, $seconds] = array_map(
+                    'intval',
+                    $parts
+                );
+
+                if (
+                    $minutes < 0
+                    || $seconds < 0
+                    || $seconds > 59
+                ) {
+                    return null;
+                }
+
+                return ($minutes * 60)
+                    + $seconds;
+            }
+
+            if (count($parts) === 3) {
+                [$hours, $minutes, $seconds] = array_map(
+                    'intval',
+                    $parts
+                );
+
+                if (
+                    $hours < 0
+                    || $minutes < 0
+                    || $minutes > 59
+                    || $seconds < 0
+                    || $seconds > 59
+                ) {
+                    return null;
+                }
+
+                return ($hours * 3600)
+                    + ($minutes * 60)
+                    + $seconds;
+            }
+
             return null;
         }
 
-        return ($minutes * 60)
-            + $seconds;
+        $normalized = str_replace(',', '.', $time);
+        if (is_numeric($normalized)) {
+            $minutes = (float) $normalized;
+            if ($minutes <= 0) {
+                return null;
+            }
+
+            return (int) round($minutes * 60);
+        }
+
+        return null;
     }
 
     private function saveSplits(

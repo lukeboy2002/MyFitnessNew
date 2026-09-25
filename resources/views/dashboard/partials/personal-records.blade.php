@@ -84,14 +84,19 @@
                     @php
                         $duration = $longestDuration->duration_seconds;
 
-                        $minutes = floor($duration / 60);
+                        $hours = floor($duration / 3600);
+                        $minutes = floor(($duration % 3600) / 60);
                         $seconds = $duration % 60;
                     @endphp
 
                     <x-slot:description>
-                        {{ $minutes }}m
-                        @if ($seconds > 0)
-                            {{ $seconds }}s
+                        @if ($hours > 0)
+                            {{ $hours }}h {{ $minutes }}m
+                        @else
+                            {{ $minutes }}m
+                            @if ($seconds > 0)
+                                {{ $seconds }}s
+                            @endif
                         @endif
                     </x-slot:description>
                     <x-slot:exercise>

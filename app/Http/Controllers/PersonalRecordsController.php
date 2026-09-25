@@ -48,22 +48,27 @@ class PersonalRecordsController extends Controller
                     'exercise' => $exercise,
                     'highest_weight' => $sets
                         ->whereNotNull('weight')
+                        ->where('weight', '>', 0)
                         ->sortByDesc('weight')
                         ->first(),
                     'most_reps' => $sets
                         ->whereNotNull('reps')
+                        ->where('reps', '>', 0)
                         ->sortByDesc('reps')
                         ->first(),
                     'longest_duration' => $sets
                         ->whereNotNull('duration_seconds')
+                        ->where('duration_seconds', '>', 0)
                         ->sortByDesc('duration_seconds')
                         ->first(),
                     'longest_distance' => $sets
                         ->whereNotNull('distance_km')
+                        ->where('distance_km', '>', 0)
                         ->sortByDesc('distance_km')
                         ->first(),
                     'most_calories' => $sets
                         ->whereNotNull('calories_total')
+                        ->where('calories_total', '>', 0)
                         ->sortByDesc('calories_total')
                         ->first(),
                 ];

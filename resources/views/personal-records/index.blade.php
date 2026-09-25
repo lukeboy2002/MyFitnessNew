@@ -154,12 +154,18 @@
                                                     $seconds = $record['longest_duration']->duration_seconds;
                                                     $hours = floor($seconds / 3600);
                                                     $minutes = floor(($seconds % 3600) / 60);
+                                                    $remainingSeconds = $seconds % 60;
                                                 @endphp
 
                                                 @if ($hours > 0)
                                                     {{ $hours }}h {{ $minutes }}m
-                                                @else
+                                                @elseif ($minutes > 0)
                                                     {{ $minutes }} min
+                                                    @if ($remainingSeconds > 0)
+                                                        {{ $remainingSeconds }}s
+                                                    @endif
+                                                @else
+                                                    {{ $remainingSeconds }}s
                                                 @endif
                                             @else
                                                 —
