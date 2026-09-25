@@ -49,7 +49,9 @@
                     icon="dumbbell"
                     title="{{ __('Exercises') }}">
                     <x-slot:description>
-                        {{ $lastWorkout->workout?->workoutExercises?->count() ?? 0 }}
+                        {{ $lastWorkout?->workoutSessionExercises
+                            ?->where('removed', false)
+                            ->count() ?? 0 }}
                     </x-slot:description>
                 </x-card.small>
 

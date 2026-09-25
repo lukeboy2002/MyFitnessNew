@@ -32,7 +32,7 @@ test('cardio exercise results can be saved without mass assignment exceptions', 
         'workout_exercise_id' => $workoutExercise->id,
         'set_number' => 1,
         'type' => WorkoutSetType::Working,
-        'target_duration_minutes' => 30,
+        'target_duration_seconds' => 1800,
         'target_distance_km' => 5.0,
     ]);
 
@@ -57,7 +57,7 @@ test('cardio exercise results can be saved without mass assignment exceptions', 
         ->set('strokeRate', 28)
         ->set('rotations', 85)
         ->set('floors', 12)
-        ->call('saveResults');
+        ->call('completeExercise');
 
     $component->assertHasNoErrors();
 
@@ -72,7 +72,7 @@ test('cardio exercise results can be saved without mass assignment exceptions', 
         ->and($workoutSet->calories_active)->toBe(250)
         ->and($workoutSet->calories_total)->toBe(310)
         ->and((float) $workoutSet->distance_km)->toBe(6.2)
-        ->and($workoutSet->pace)->toBe('04:50')
+        ->and($workoutSet->pace_seconds)->toBe(290)
         ->and($workoutSet->avg_heart_rate)->toBe(145)
         ->and($workoutSet->stroke_rate)->toBe(28)
         ->and($workoutSet->rotations)->toBe(85)
