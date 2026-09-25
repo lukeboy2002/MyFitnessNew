@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'workout_exercise_id',
     'order',
     'notes',
+    'removed',
 ])]
 class WorkoutSessionExercise extends Model
 {
@@ -28,6 +29,7 @@ class WorkoutSessionExercise extends Model
     {
         return [
             'order' => 'integer',
+            'removed' => 'boolean',
         ];
     }
 }

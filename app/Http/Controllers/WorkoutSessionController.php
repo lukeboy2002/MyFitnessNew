@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Workout;
 use App\Models\WorkoutSession;
+use App\Models\WorkoutSessionExercise;
 use App\Models\WorkoutSet;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -48,6 +49,13 @@ class WorkoutSessionController extends Controller
 
         /* Create actual workout sets from the workout template sets. */
         foreach ($workout->workoutExercises as $workoutExercise) {
+            WorkoutSessionExercise::create([
+                'workout_session_id' => $session->id,
+                'workout_exercise_id' => $workoutExercise->id,
+                'order' => $workoutExercise->order,
+                'removed' => false,
+            ]);
+
             foreach ($workoutExercise->workoutExerciseSets as $templateSet) {
                 WorkoutSet::create([
                     'workout_session_id' => $session->id,
@@ -106,7 +114,6 @@ class WorkoutSessionController extends Controller
         return redirect()->route('sessions.show', $session);
     }
 
-    /* Show a workout session. */
     public function show(WorkoutSession $session): View
     {
         abort_unless(
@@ -114,20 +121,13 @@ class WorkoutSessionController extends Controller
             403
         );
 
-        /* Load everything required for the workout session. */
         $session->load([
-            'workout.workoutExercises.exercise',
-            'workout.workoutExercises.workoutExerciseSets' => fn ($query) => $query
-                ->with(['workoutSets' => fn ($query) => $query
-                    ->where(
-                        'workout_session_id', $session->id
-                    ),
-                ]),
+            'workout.workoutExercises.workoutExerciseSets',
         ]);
 
-        return view(
-            'sessions.show', ['session' => $session]
-        );
+        return view('sessions.show', [
+            'session' => $session,
+        ]);
     }
 
     public function complete(WorkoutSession $session): RedirectResponse
@@ -159,6 +159,7 @@ class WorkoutSessionController extends Controller
 
         $session->load([
             'workout',
+            'workoutSessionExercises',
             'workoutSets.workoutExerciseSet.workoutExercise.exercise',
         ]);
 

@@ -39,37 +39,10 @@
 
         {{-- Workout Content --}}
         <main class="mx-auto max-w-4xl space-y-4 px-4 py-6">
-            @if($session->workout)
-
-                {{-- Bestaande normale workout --}}
-                @foreach($session->workout->workoutExercises as $workoutExercise)
-
-                    @if($workoutExercise->exercise->type === ExerciseType::Strength)
-                        <livewire:sessions.strength-exercise
-                            :session="$session"
-                            :workout-exercise="$workoutExercise"
-                            :key="'strength-' . $workoutExercise->id"
-                        />
-
-                    @elseif($workoutExercise->exercise->type === ExerciseType::Cardio)
-                        <livewire:sessions.cardio-exercise
-                            :session="$session"
-                            :workout-exercise="$workoutExercise"
-                            :key="'cardio-' . $workoutExercise->id"
-                        />
-                    @endif
-
-                @endforeach
-
-            @else
-
-                {{-- Free Training --}}
-                <livewire:sessions.free-training-exercises
-                    :session="$session"
-                    :key="'free-training-' . $session->id"
-                />
-
-            @endif
+            <livewire:sessions.session-exercises
+                :session="$session"
+                :key="'session-exercises-' . $session->id"
+            />
         </main>
 
         {{-- End Workout --}}
@@ -103,7 +76,7 @@
              x-transition:leave="transition ease-in duration-300"
              x-transition:leave-start="opacity-100 translate-y-0"
              x-transition:leave-end="opacity-0 translate-y-full"
-             class="fixed bottom-14 left-0 right-0 z-30 border-t border-border bg-surface/95 shadow-lg backdrop-blur-md md:bottom-0"
+             class="fixed bottom-14 md:bottom-0 left-0 right-0 z-30 border-t border-border bg-surface/95 shadow-lg backdrop-blur-md"
              :class="sidebarOpen ? 'md:left-48' : 'md:left-16 lg:left-48'">
 
             {{-- Progress Bar --}}

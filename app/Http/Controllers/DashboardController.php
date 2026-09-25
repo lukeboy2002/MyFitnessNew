@@ -25,7 +25,10 @@ class DashboardController extends Controller
         $lastWorkout = WorkoutSession::query()
             ->where('user_id', $userId)
             ->where('completed', true)
-            ->with(['workout.workoutExercises'])
+            ->with([
+                'workout',
+                'workoutSessionExercises',
+            ])
             ->withCount([
                 'workoutSets as completed_sets_count' => function ($query) {
                     $query->where('completed', true);

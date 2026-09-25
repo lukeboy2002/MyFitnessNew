@@ -22,7 +22,20 @@
     }
 
     $completedSets = $session->workoutSets
-        ->where('completed', true);
+    ->where('completed', true);
+
+    $activeWorkoutExerciseIds = $session->workoutSessionExercises
+        ->where('removed', false)
+        ->pluck('workout_exercise_id');
+
+    $completedSets = $completedSets
+        ->filter(
+            fn ($set) =>
+                $set->workoutExerciseSet
+                && $activeWorkoutExerciseIds->contains(
+                    $set->workoutExerciseSet->workout_exercise_id
+                )
+        );
 
     $totalSets = $completedSets->count();
 
