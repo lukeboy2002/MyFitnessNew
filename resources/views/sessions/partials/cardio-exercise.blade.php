@@ -1,3 +1,5 @@
+@use('App\Enum\ExerciseMetric')
+
 <x-card.default
     title="{{ $workoutExercise->exercise->name }}"
     text_color="text-primary"
@@ -52,7 +54,30 @@
 
                 {{-- Intensity --}}
                 <div class="col-span-3">
-                    @if($templateSet->target_metric)
+                    @if($session->workout_id === null && ! $completed)
+                        <div class="flex items-center gap-2">
+                            <select
+                                wire:change="updateTargetMetric({{ $templateSet->id }}, $event.target.value)"
+                                class="text-xs rounded-md border-border bg-surface-hover/50 text-primary py-1 px-2 focus:border-secondary focus:ring-0"
+                            >
+                                <option value="">{{ __('Select metric') }}</option>
+                                @foreach(ExerciseMetric::cases() as $metric)
+                                    <option value="{{ $metric->value }}" @selected($templateSet->target_metric === $metric)>
+                                        {{ ucfirst(str_replace('_', ' ', $metric->value)) }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            <input
+                                type="number"
+                                step="0.1"
+                                placeholder="{{ __('Value') }}"
+                                value="{{ $templateSet->target_metric_value }}"
+                                wire:change="updateTargetMetricValue({{ $templateSet->id }}, $event.target.value)"
+                                class="w-20 text-xs rounded-md border-border bg-surface-hover/50 text-primary py-1 px-2 focus:border-secondary focus:ring-0"
+                            />
+                        </div>
+                    @elseif($templateSet->target_metric)
                         <div class="flex items-center gap-2 text-sm text-muted">
                             <span>
                                 {{ ucfirst(str_replace('_', ' ', $templateSet->target_metric->value)) }}

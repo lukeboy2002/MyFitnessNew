@@ -26,11 +26,13 @@ class BodyPartSeeder extends Seeder
         ];
 
         foreach ($bodyParts as $name) {
-            BodyPart::create([
-                'name' => $name,
-                'slug' => Str::slug($name),
-                'image_path' => 'bodyparts/'.Str::slug($name).'.png',
-            ]);
+            BodyPart::updateOrCreate(
+                ['slug' => Str::slug($name)],
+                [
+                    'name' => $name,
+                    'image_path' => 'bodyparts/'.Str::slug($name).'.png',
+                ]
+            );
         }
     }
 }

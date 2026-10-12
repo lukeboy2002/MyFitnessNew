@@ -1,5 +1,6 @@
 <?php
 
+use App\Enum\ExerciseMetric;
 use App\Enum\ExerciseType;
 use App\Enum\WorkoutSetType;
 use App\Livewire\Sessions\CardioExercise;
@@ -218,4 +219,54 @@ test('cardio exercise falls back to target duration and distance when completing
     expect($workoutSet->completed)->toBeTrue()
         ->and($workoutSet->duration_seconds)->toBe(900)
         ->and((float) $workoutSet->distance_km)->toBe(2.5);
+});
+
+test('cardio exercise in free training allows specifying metric and value', function () {
+    $user = User::factory()->create();
+
+    $exercise = Exercise::factory()->create([
+        'type' => ExerciseType::Cardio,
+    ]);
+
+    $workoutExercise = WorkoutExercise::factory()->create([
+        'workout_id' => null,
+        'exercise_id' => $exercise->id,
+    ]);
+
+    $templateSet = WorkoutExerciseSet::factory()->create([
+        'workout_exercise_id' => $workoutExercise->id,
+        'set_number' => 1,
+        'type' => WorkoutSetType::Working,
+        'target_duration_seconds' => 1200,
+        'target_metric' => null,
+        'target_metric_value' => null,
+    ]);
+
+    $session = WorkoutSession::create([
+        'user_id' => $user->id,
+        'workout_id' => null,
+        'started_at' => now(),
+    ]);
+
+    $component = Livewire::actingAs($user)
+        ->test(CardioExercise::class, [
+            'session' => $session,
+            'workoutExercise' => $workoutExercise,
+        ])
+        ->assertSeeHtml('wire:change="updateTargetMetric(')
+        ->assertSeeHtml('wire:change="updateTargetMetricValue(')
+        ->call('updateTargetMetric', $templateSet->id, 'speed')
+        ->call('updateTargetMetricValue', $templateSet->id, 12.5);
+
+    $templateSet->refresh();
+    expect($templateSet->target_metric)->toBe(ExerciseMetric::Speed)
+        ->and((float) $templateSet->target_metric_value)->toBe(12.5);
+
+    $workoutSet = WorkoutSet::where('workout_session_id', $session->id)
+        ->where('workout_exercise_set_id', $templateSet->id)
+        ->first();
+
+    expect($workoutSet)->not->toBeNull()
+        ->and($workoutSet->metric)->toBe('speed')
+        ->and((float) $workoutSet->metric_value)->toBe(12.5);
 });

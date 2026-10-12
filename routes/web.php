@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\EditorUploadController;
 use App\Http\Controllers\PersonalRecordsController;
 use App\Http\Controllers\WorkoutSessionController;
 use App\Livewire\BodyParts\BodypartForm;
@@ -13,6 +12,7 @@ use App\Livewire\Exercises\ExercisesIndex;
 use App\Livewire\Exercises\ExercisesShow;
 use App\Livewire\Muscle\MuscleForm;
 use App\Livewire\Muscle\MuscleIndex;
+use App\Livewire\Muscle\MuscleProgress;
 use App\Livewire\Musclegroups\MusclegroupForm;
 use App\Livewire\Musclegroups\MusclegroupIndex;
 use App\Livewire\Workout\WorkoutCalendar;
@@ -42,13 +42,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/sessions/{session}/complete', [WorkoutSessionController::class, 'complete'])->name('sessions.complete');
     Route::get('/sessions/{session}/summary', [WorkoutSessionController::class, 'summary'])->name('sessions.summary');
 
+    Route::get('muscles/progress', MuscleProgress::class)->name('muscles.progress');
     Route::get(
         '/personal-records', [PersonalRecordsController::class, 'index'])->name('personal-records.index');
     Route::get('/personal-records/{exercise}', [PersonalRecordsController::class, 'show'])->name('personal-records.show');
 
     // ── TipTapEditor Images ──────────────────────────────────────────────────────────
-    Route::post('editor/uploads/images', [EditorUploadController::class, 'store'])->name('editor.uploads.images');
-    Route::delete('editor/uploads/images', [EditorUploadController::class, 'destroy'])->name('editor.uploads.images.destroy');
+    //    Route::post('editor/uploads/images', [EditorUploadController::class, 'store'])->name('editor.uploads.images');
+    //    Route::delete('editor/uploads/images', [EditorUploadController::class, 'destroy'])->name('editor.uploads.images.destroy');
 
     Route::middleware('can:access-admin')->group(function () {
         Route::get('/carousel', CarouselIndex::class)->name('carousel.index');

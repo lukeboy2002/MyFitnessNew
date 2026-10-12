@@ -12,7 +12,7 @@ class ProgressChart extends Component
 {
     public Exercise $exercise;
 
-    public string $metric;
+    public ?string $metric = null;
 
     public function mount(
         Exercise $exercise
@@ -150,6 +150,10 @@ class ProgressChart extends Component
      */
     public function getProgressData(): Collection
     {
+        if ($this->metric === null) {
+            return collect();
+        }
+
         $sets = $this->getExerciseSets();
 
         return collect(

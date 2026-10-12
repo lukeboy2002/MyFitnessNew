@@ -359,7 +359,7 @@
                         <p
                             class="font-medium text-primary"
                         >
-                            {{ $latestSession['session']->workout->name }}
+                            {{ $latestSession['session']->workout->name?? 'Free Training' }}
                         </p>
 
                         <p

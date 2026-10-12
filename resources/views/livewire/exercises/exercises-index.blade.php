@@ -13,8 +13,32 @@
                         <x-slot name="trigger">
                             <x-button.default variant="outline"
                                               icon="filter"
-                                              size="4"
-                            />
+                                              size="4">
+                                {{ __('Body parts') }}
+                            </x-button.default>
+                        </x-slot>
+
+                        <x-slot name="content">
+                            <x-dropdown.button wire:click="$set('bodyPartId', '')">
+                                {{ __('All body parts') }}
+                            </x-dropdown.button>
+
+                            @foreach ($bodyParts as $bodyPart)
+                                <x-dropdown.button wire:key="filter-bodypart-{{ $bodyPart->id }}"
+                                                   wire:click="$set('bodyPartId', '{{ $bodyPart->id }}')">
+                                    {{ $bodyPart->name }}
+                                </x-dropdown.button>
+                            @endforeach
+                        </x-slot>
+                    </x-dropdown.default>
+
+                    <x-dropdown.default align="right" width="48">
+                        <x-slot name="trigger">
+                            <x-button.default variant="outline"
+                                              icon="filter"
+                                              size="4">
+                                {{ __('Muscle groups') }}
+                            </x-button.default>
                         </x-slot>
 
                         <x-slot name="content">
@@ -38,6 +62,28 @@
                     />
                 </div>
             </x-slot:actions>
+
+            @if ($bodyPartId || $muscleGroupId)
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="text-xs text-muted">{{ __('Active filters:') }}</span>
+
+                    @if ($bodyPartId)
+                        <button wire:click="$set('bodyPartId', '')"
+                                class="inline-flex items-center gap-1 text-xs px-2 py-1 rounded bg-surface-secondary border border-border text-secondary hover:text-danger">
+                            <span>{{ $this->bodyPartName }}</span>
+                            <x-lucide-x class="w-3 h-3"/>
+                        </button>
+                    @endif
+
+                    @if ($muscleGroupId)
+                        <button wire:click="$set('muscleGroupId', '')"
+                                class="inline-flex items-center gap-1 text-xs px-2 py-1 rounded bg-surface-secondary border border-border text-secondary hover:text-danger">
+                            <span>{{ $this->muscleGroupName }}</span>
+                            <x-lucide-x class="w-3 h-3"/>
+                        </button>
+                    @endif
+                </div>
+            @endif
 
             <div
                 class="grid {{ $exercises->isEmpty() ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3' }} gap-3">
@@ -77,24 +123,46 @@
                                     @endif
                                 </div>
 
-                                @if ($exercise->muscleGroups->isNotEmpty())
-                                    <div class="mt-1 text-muted flex gap-1 items-center">
-                                        <x-lucide-biceps-flexed class="h-3 w-3"/>
-                                        @foreach ($exercise->muscleGroups as $muscleGroup)
-                                            <span
-                                                class="text-xs border-r border-r-muted pr-1 last:border-0">
-                                                {{ $muscleGroup->name }}
-                                            </span>
-                                        @endforeach
+                                @if ($exercise->bodyParts->isNotEmpty())
+                                    <div class="mt-1 text-muted flex items-start gap-1">
+                                        <x-lucide-person-standing class="h-3.5 w-3.5 shrink-0 mt-0.5"/>
+                                        <div class="flex flex-wrap items-center gap-x-1 gap-y-0.5">
+                                            @foreach ($exercise->bodyParts as $bodyPart)
+                                                <span
+                                                    class="text-xs border-r border-r-muted pr-1 last:border-0 whitespace-nowrap">
+                                                    {{ $bodyPart->name }}
+                                                </span>
+                                            @endforeach
+                                        </div>
                                     </div>
                                 @endif
+
+                                @if ($exercise->muscleGroups->isNotEmpty())
+                                    <div class="mt-1 text-muted flex items-start gap-1">
+                                        <x-lucide-biceps-flexed class="h-3.5 w-3.5 shrink-0 mt-0.5"/>
+                                        <div class="flex flex-wrap items-center gap-x-1 gap-y-0.5">
+                                            @foreach ($exercise->muscleGroups as $muscleGroup)
+                                                <span
+                                                    class="text-xs border-r border-r-muted pr-1 last:border-0 whitespace-nowrap">
+                                                    {{ $muscleGroup->name }}
+                                                </span>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endif
+
+                                <div class="mt-1 flex items-center gap-1 text-xs text-muted">
+                                    <x-lucide-repeat-2 class="w-3.5 h-3.5"/>
+                                    {{ $exercise->performed_count }}
+                                    {{ __('times performed') }}
+                                </div>
                             </div>
 
                         </a>
 
                         {{-- Actions --}}
                         @if (auth()->user()?->can('update', $exercise) || auth()->user()?->can('delete', $exercise))
-                            <div class="flex items-center gap-2 pr-2">
+                            <div class="flex items-center gap-2 pr-2 pb-2 self-end">
                                 @can('update', $exercise)
                                     <x-link.default
                                         variant="outline"

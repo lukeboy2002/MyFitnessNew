@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Sessions;
 
+use App\Enum\ExerciseMetric;
 use App\Models\WorkoutExercise;
 use App\Models\WorkoutExerciseSet;
 use App\Models\WorkoutSession;
@@ -453,6 +454,8 @@ class CardioExercise extends Component
         $workoutSet->update([
             'duration_seconds' => $durationSeconds,
             'distance_km' => $this->distanceKm ?: ($workoutSet->distance_km ?: ($templateSet?->target_distance_km !== null ? (float) $templateSet->target_distance_km : null)),
+            'metric' => $workoutSet->metric ?? $templateSet?->target_metric?->value,
+            'metric_value' => $workoutSet->metric_value ?? $templateSet?->target_metric_value,
 
             'mets' => $this->mets ?: null,
             'watts' => $this->watts ?: null,
@@ -749,6 +752,74 @@ class CardioExercise extends Component
         if ($workoutSet) {
             $this->saveSplits($workoutSet);
         }
+    }
+
+    public function updateTargetMetric(
+        int $templateSetId,
+        ?string $metric
+    ): void {
+        $templateSet = $this->workoutExercise
+            ->workoutExerciseSets
+            ->firstWhere('id', $templateSetId);
+
+        if (! $templateSet) {
+            return;
+        }
+
+        $metricEnum = $metric !== null && $metric !== ''
+            ? ExerciseMetric::tryFrom($metric)
+            : null;
+
+        $templateSet->update([
+            'target_metric' => $metricEnum,
+        ]);
+
+        $workoutSet = WorkoutSet::query()
+            ->where('workout_session_id', $this->session->id)
+            ->where('workout_exercise_set_id', $templateSetId)
+            ->first();
+
+        if ($workoutSet) {
+            $workoutSet->update([
+                'metric' => $metricEnum?->value,
+            ]);
+        }
+
+        $this->workoutExercise->load('workoutExerciseSets');
+    }
+
+    public function updateTargetMetricValue(
+        int $templateSetId,
+        mixed $value
+    ): void {
+        $templateSet = $this->workoutExercise
+            ->workoutExerciseSets
+            ->firstWhere('id', $templateSetId);
+
+        if (! $templateSet) {
+            return;
+        }
+
+        $metricValue = $value !== null && $value !== ''
+            ? (float) $value
+            : null;
+
+        $templateSet->update([
+            'target_metric_value' => $metricValue,
+        ]);
+
+        $workoutSet = WorkoutSet::query()
+            ->where('workout_session_id', $this->session->id)
+            ->where('workout_exercise_set_id', $templateSetId)
+            ->first();
+
+        if ($workoutSet) {
+            $workoutSet->update([
+                'metric_value' => $metricValue,
+            ]);
+        }
+
+        $this->workoutExercise->load('workoutExerciseSets');
     }
 
     public function render(): View

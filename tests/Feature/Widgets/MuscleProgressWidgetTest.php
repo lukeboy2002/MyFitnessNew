@@ -122,10 +122,36 @@ test('user can switch periods to filter sets', function () {
     Livewire::actingAs($user)
         ->test(MuscleProgress::class)
         ->set('period', 'this_month')
-        ->assertSee('No completed sets recorded in this period.')
+        ->assertSee('Chest')
+        ->assertSee('0 sets')
         ->call('setPeriod', 'this_year')
         ->assertSee('Chest')
         ->assertSee('1 sets');
+});
+
+test('all body parts and muscle groups are displayed with 0 sets when there is no progress', function () {
+    $user = User::factory()->create();
+
+    $chest = BodyPart::factory()->create(['name' => 'Chest']);
+    $back = BodyPart::factory()->create(['name' => 'Back']);
+
+    $upperChest = MuscleGroup::factory()->create([
+        'name' => 'Upper Chest',
+        'body_part_id' => $chest->id,
+    ]);
+    $lowerChest = MuscleGroup::factory()->create([
+        'name' => 'Lower Chest',
+        'body_part_id' => $chest->id,
+    ]);
+
+    Livewire::actingAs($user)
+        ->test(MuscleProgress::class)
+        ->assertSee('Chest')
+        ->assertSee('Back')
+        ->assertSee('0 sets')
+        ->call('toggleBodyPart', $chest->id)
+        ->assertSee('Upper Chest')
+        ->assertSee('Lower Chest');
 });
 
 test('user can expand body part to view muscle group progress breakdown', function () {
@@ -233,6 +259,42 @@ test('muscle progress widget only includes completed sets from current user', fu
     // User 1 sees 1 set, not 2
     Livewire::actingAs($user1)
         ->test(MuscleProgress::class)
+        ->assertSee('Chest')
+        ->assertSee('1 sets');
+});
+
+test('muscle progress widget defaults to all_time period', function () {
+    $user = User::factory()->create();
+
+    $chestBodyPart = BodyPart::factory()->create(['name' => 'Chest']);
+    $benchPress = Exercise::factory()->create(['name' => 'Bench Press', 'user_id' => $user->id]);
+    $benchPress->bodyParts()->attach($chestBodyPart->id);
+
+    $workout = Workout::factory()->create(['user_id' => $user->id]);
+    $weBench = WorkoutExercise::factory()->create([
+        'workout_id' => $workout->id,
+        'exercise_id' => $benchPress->id,
+    ]);
+    $wesBench = WorkoutExerciseSet::factory()->create(['workout_exercise_id' => $weBench->id, 'set_number' => 1]);
+
+    // Session from 6 months ago (outside this month and this week)
+    $oldSession = WorkoutSession::create([
+        'user_id' => $user->id,
+        'workout_id' => $workout->id,
+        'started_at' => now()->subMonths(6),
+        'completed_at' => now()->subMonths(6)->addHour(),
+        'completed' => true,
+    ]);
+
+    WorkoutSet::create([
+        'workout_session_id' => $oldSession->id,
+        'workout_exercise_set_id' => $wesBench->id,
+        'completed' => true,
+    ]);
+
+    Livewire::actingAs($user)
+        ->test(MuscleProgress::class)
+        ->assertSet('period', 'all_time')
         ->assertSee('Chest')
         ->assertSee('1 sets');
 });

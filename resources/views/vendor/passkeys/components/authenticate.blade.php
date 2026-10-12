@@ -16,7 +16,7 @@
 @endif
 
 @if($message = session()->get('authenticatePasskey::message'))
-    <div class="mt-2 mb-4 font-medium text-xs text-error flex gap-2 items-center">
+    <div class="mt-2 mb-4 font-medium text-xs text-danger flex gap-2 items-center">
         <div class="flex gap-2 items-center">
             <x-lucide-triangle-alert class="h-4 w-4"/>
             {{ $message }}

@@ -3,6 +3,7 @@
 namespace App\Livewire\Exercises;
 
 use App\Enum\ExerciseType;
+use App\Models\BodyPart;
 use App\Models\Exercise;
 use App\Models\Muscle;
 use App\Models\MuscleGroup;
@@ -40,6 +41,11 @@ class ExercisesForm extends Component
     #[Rule('required|min:3|max:5000')]
     public ?string $howto = '';
 
+    #[Rule('required|min:3|max:5000')]
+    public ?string $tips = '';
+
+    public array $selectedBodyParts = [];
+
     public array $selectedMuscleGroups = [];
 
     public array $selectedMuscles = [];
@@ -60,6 +66,7 @@ class ExercisesForm extends Component
             $this->authorize('update', $exercise);
 
             $this->exercise->load([
+                'bodyParts',
                 'muscleGroups',
                 'muscles',
             ]);
@@ -69,7 +76,18 @@ class ExercisesForm extends Component
             $this->slug = $this->exercise->slug;
             $this->type = $this->exercise->type ?? ExerciseType::Strength;
             $this->description = $this->exercise->description;
-            $this->howto = $this->exercise->howto;
+            //            $this->howto = $this->exercise->howto;
+            $this->howto = is_array($this->exercise->howto)
+                ? implode("\n", $this->exercise->howto)
+                : ($this->exercise->howto ?? '');
+            $this->tips = is_array($this->exercise->tips)
+                ? implode("\n", $this->exercise->tips)
+                : ($this->exercise->tips ?? '');
+
+            $this->selectedBodyParts = $this->exercise
+                ->bodyParts
+                ->pluck('id')
+                ->all();
 
             $this->selectedMuscleGroups = $this->exercise
                 ->muscleGroups
@@ -106,18 +124,30 @@ class ExercisesForm extends Component
 
         $this->validate();
 
+        $howtoSteps = ! empty($this->howto)
+            ? array_values(array_filter(array_map('trim', explode("\n", $this->howto)), fn ($line) => $line !== ''))
+            : null;
+        $tipsSteps = ! empty($this->tips)
+            ? array_values(array_filter(array_map('trim', explode("\n", $this->tips)), fn ($line) => $line !== ''))
+            : null;
+
         $data = [
             'user_id' => $this->user_id,
             'name' => $this->name,
             'slug' => $this->slug,
             'type' => $this->type instanceof ExerciseType ? $this->type->value : $this->type,
             'description' => $this->description,
-            'howto' => $this->howto,
+            //            'howto' => $this->howto,
+            'howto' => $howtoSteps, // Wordt door Eloquent's 'array' cast automatisch als JSON opgeslagen
+            'tips' => $tipsSteps, // Wordt door Eloquent's 'array' cast automatisch als JSON opgeslagen
+
         ];
 
         $exercise = $this->exercise ?? new Exercise;
 
         $exercise->saveItem($data, $this->image_path);
+
+        $this->syncBodyParts($exercise);
 
         $this->syncMuscleGroups($exercise);
 
@@ -130,6 +160,16 @@ class ExercisesForm extends Component
         return redirect()->route('exercises.index');
     }
 
+    private function syncBodyParts(
+        Exercise $exercise
+    ): void {
+        $exercise
+            ->bodyParts()
+            ->sync(
+                $this->selectedBodyParts
+            );
+    }
+
     private function syncMuscleGroups(
         Exercise $exercise
     ): void {
@@ -140,50 +180,12 @@ class ExercisesForm extends Component
             );
     }
 
-    //    private function syncMuscles(
-    //        Exercise $exercise
-    //    ): void {
-    //        $data = [];
-    //
-    //        foreach (
-    //            $this->selectedMuscles as $muscleId
-    //        ) {
-    //
-    //            $role = $this->muscleRoles[$muscleId]
-    //                ?? 'primary';
-    //
-    //            if (
-    //                ! in_array(
-    //                    $role,
-    //                    [
-    //                        'primary',
-    //                        'secondary',
-    //                        'stabilizer',
-    //                    ],
-    //                    true
-    //                )
-    //            ) {
-    //                $role = 'primary';
-    //            }
-    //
-    //            $data[$muscleId] = [
-    //                'role' => $role,
-    //            ];
-    //        }
-    //
-    //        $exercise
-    //            ->muscles()
-    //            ->sync($data);
-    //    }
-    private function syncMuscles(
-        Exercise $exercise
-    ): void {
+    private function syncMuscles(Exercise $exercise): void
+    {
 
         $data = [];
 
-        foreach (
-            $this->selectedMuscles as $muscleId
-        ) {
+        foreach ($this->selectedMuscles as $muscleId) {
 
             $data[$muscleId] = [
                 'role' => $this->muscleRoles[$muscleId]
@@ -220,6 +222,17 @@ class ExercisesForm extends Component
     #[Layout('layouts.app', ['pageTitle' => 'Exercises'])]
     public function render()
     {
+        $bodyParts = BodyPart::orderBy('name')
+            ->get()
+            ->map(
+                fn (BodyPart $bodyPart) => [
+                    'id' => $bodyPart->id,
+                    'name' => $bodyPart->name,
+                ]
+            )
+            ->values()
+            ->all();
+
         $muscleGroups = MuscleGroup::orderBy('name')
             ->get()
             ->map(
@@ -245,6 +258,7 @@ class ExercisesForm extends Component
         return view(
             'livewire.exercises.exercises-form',
             [
+                'bodyParts' => $bodyParts,
                 'muscleGroups' => $muscleGroups,
                 'muscles' => $muscles,
             ]

@@ -27,9 +27,10 @@
              data-initial="{{ $howto }}"
              data-upload-url="{{ route('editor.uploads.images') }}"
              data-delete-url="{{ route('editor.uploads.images.destroy') }}"
-             class="min-h-37.5 prose dark:prose-invert max-w-none">
+             class="min-h-37.5 prose prose-orange dark:prose-invert max-w-none">
         </div>
     </x-tiptapeditor.editor>
 
     <x-form.error :messages="$errors->get('howto')"/>
 </div>
+

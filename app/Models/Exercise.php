@@ -23,16 +23,13 @@ use Spatie\Image\Image;
     'type',
     'description',
     'howto',
+    'tips',
     'image_path',
 ])]
 
 class Exercise extends Model
 {
     use HasFactory, Sluggable;
-
-    protected $casts = [
-        'type' => ExerciseType::class,
-    ];
 
     public function bodyParts(): BelongsToMany
     {
@@ -141,6 +138,8 @@ class Exercise extends Model
     {
         return [
             'type' => ExerciseType::class,
+            'howto' => 'array',
+            'tips' => 'array',
         ];
     }
 }

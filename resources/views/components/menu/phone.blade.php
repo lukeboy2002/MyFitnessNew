@@ -52,6 +52,17 @@
                bg-surface p-2 shadow-xl">
 
             <a
+                href="{{ route('muscles.progress') }}"
+                @click="open = false"
+                class="flex items-center gap-3 rounded-xl px-3 py-2.5
+                   text-sm text-primary hover:bg-surface-secondary
+                   hover:text-secondary transition-colors">
+
+                <x-lucide-dumbbell class="w-5 h-5"/>
+                <span>{{ __('Muscle progress') }}</span>
+            </a>
+
+            <a
                 href="{{ route('exercises.index') }}"
                 @click="open = false"
                 class="flex items-center gap-3 rounded-xl px-3 py-2.5

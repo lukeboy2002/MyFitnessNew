@@ -21,7 +21,9 @@ class ExercisesShow extends Component
         $this->exercise = $exercise->load([
             'bodyParts',
             'muscleGroups',
-            'muscles',
+            'muscles' => function ($query) {
+                $query->orderByRaw("CASE exercise_muscle.role WHEN 'primary' THEN 1 WHEN 'secondary' THEN 2 WHEN 'stabilizer' THEN 3 ELSE 4 END");
+            },
         ]);
     }
 

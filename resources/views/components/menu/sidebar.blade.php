@@ -10,6 +10,7 @@
     $navItems = [
         ['route' => 'dashboard',        'icon' => 'house', 'label' => 'Home'],
         ['route' => 'workout.index',   'icon' => 'layers', 'label' => __('Workouts')],
+        ['route' => 'muscles.progress', 'icon' => 'dumbbell', 'label' => __('Muscle Progress')],
         ['route' => 'exercises.index',  'icon' => 'activity', 'label' => __('Exercises')],
 
 //        ['route' => 'statistics.index', 'icon' => 'chart-bar', 'label' => 'Stats'],
@@ -40,7 +41,7 @@
                    class="flex items-center px-4 py-3 transition-colors
                               {{ request()->routeIs(str_replace('.index', '.*', $item['route']))
                                   ? 'text-secondary bg-surface-hover'
-                                  : 'text-primary hover:text-secondary hover:bg-surface-hover' }}">
+                                  : 'text-primary hover:text-secondary hover:bg-surface-hover focus:text-secondary focus:bg-surface-hover' }}">
                     <x-dynamic-component :component="'lucide-' . $item['icon']" class="w-6 h-6 shrink-0"/>
                     <span
                         class="ml-4 font-medium overflow-hidden whitespace-nowrap transition-opacity duration-300"
@@ -58,7 +59,7 @@
                        class="flex items-center px-4 py-3 transition-colors
                               {{ request()->routeIs(str_replace('.index', '.*', $item['route']))
                                   ? 'text-secondary bg-surface-hover'
-                                  : 'text-primary hover:text-secondary hover:bg-surface-hover' }}">
+                                  : 'text-primary hover:text-secondary hover:bg-surface-hover focus:text-secondary focus:bg-surface-hover' }}">
                         <x-dynamic-component :component="'lucide-' . $item['icon']" class="w-6 h-6 shrink-0"/>
                         <span
                             class="ml-4 font-medium overflow-hidden whitespace-nowrap transition-opacity duration-300"
@@ -74,7 +75,7 @@
             <a href="{{ route('profile.index') }}" class="flex items-center px-4 py-3 transition-colors
                               {{ request()->routeIs('profile.edit')
                               ? 'text-secondary bg-surface-hover'
-                              : 'text-primary hover:text-secondary hover:bg-surface-hover' }}">
+                              : 'text-primary hover:text-secondary hover:bg-surface-hover focus:text-secondary focus:bg-surface-hover' }}">
                 @if (Auth::user()->avatar)
                     <img src="{{ Auth::user()->avatar_url }}" alt="{{ Auth::user()->name }}"
                          class="w-8 h-8 rounded-full object-cover shrink-0">
@@ -95,7 +96,7 @@
 
                    class="flex items-center px-4 py-3 transition-colors
                               ? 'text-secondary bg-surface-hover'
-                              : 'text-primary hover:text-secondary hover:bg-surface-hover' }}">
+                              : 'text-primary hover:text-secondary hover:bg-surface-hover focus:text-secondary focus:bg-surface-hover' }}">
                     <x-lucide-log-out class="w-6 h-6 shrink-0"/>
                     <span
                         class="ml-4 font-medium overflow-hidden whitespace-nowrap transition-opacity duration-300"

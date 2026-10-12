@@ -16,6 +16,8 @@
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
     --font-theme: 'Anton SC', sans-serif;
 
+    --custom-outline: none;
+
     --color-body: var(--body);
     --color-surface: var(--surface);
     --color-surface-alt: var(--surface-alt);
@@ -108,6 +110,10 @@ input[type="search"]::-webkit-search-cancel-button {
         --tw-prose-td-borders: var(--secondary);
     }
 
+    .prose-orange.prose li {
+        color: var(--primary);
+    }
+
     .prose-orange.prose img {
         @apply w-full h-auto m-0;
     }
@@ -118,10 +124,17 @@ input[type="search"]::-webkit-search-cancel-button {
         font-weight: 500;
     }
 
-    .prose-orange.prose strong {
+    .prose-orange.prose strong,
+    .prose-orange.prose b,
+    .prose-orange.prose [style*="font-weight: bold"],
+    .prose-orange.prose [style*="font-weight:bold"],
+    .prose-orange.prose [style*="font-weight: 700"],
+    .prose-orange.prose [style*="font-weight:700"],
+    .prose-orange.prose [style*="font-weight: 600"],
+    .prose-orange.prose [style*="font-weight:600"] {
         color: var(--secondary);
-        text-decoration: none;
-        font-weight: 500;
+        text-decoration: underline;
+        line-height: 0.5rem;
     }
 
     .prose-orange.prose li::marker {
@@ -147,6 +160,21 @@ input[type="search"]::-webkit-search-cancel-button {
         --tw-prose-bold: hsl(20.5 90.2% 48.2%);
     }
 
+    .prose-invert.prose strong,
+    .prose-invert.prose b,
+    .prose-invert.prose [style*="font-weight: bold"],
+    .prose-invert.prose [style*="font-weight:bold"],
+    .prose-invert.prose [style*="font-weight: 700"],
+    .prose-invert.prose [style*="font-weight:700"],
+    .prose-invert.prose [style*="font-weight: 600"],
+    .prose-invert.prose [style*="font-weight:600"] {
+        color: var(--secondary);
+    }
+
+    .prose-invert.prose li::marker {
+        color: var(--secondary);
+    }
+
     .prose-invert.prose a {
         color: hsl(20.5 90.2% 48.2%);
     }
@@ -165,6 +193,17 @@ input[type="search"]::-webkit-search-cancel-button {
 .prose h2,
 .prose h3 {
     @apply text-secondary font-theme;
+}
+
+.prose strong,
+.prose b,
+.prose [style*="font-weight: bold"],
+.prose [style*="font-weight:bold"],
+.prose [style*="font-weight: 700"],
+.prose [style*="font-weight:700"],
+.prose [style*="font-weight: 600"],
+.prose [style*="font-weight:600"] {
+    color: var(--secondary);
 }
 
 .prose a {
@@ -190,5 +229,10 @@ input[type="search"]::-webkit-search-cancel-button {
     ::backdrop,
     ::file-selector-button {
         border-color: var(--color-gray-200, currentcolor);
+    }
+
+    *:focus {
+        outline: none !important;
+        box-shadow: none !important; /* Verwijdert eventuele schaduw-ringen */
     }
 }

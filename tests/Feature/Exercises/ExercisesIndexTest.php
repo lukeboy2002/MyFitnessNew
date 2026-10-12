@@ -2,7 +2,9 @@
 
 use App\Enum\ExerciseType;
 use App\Livewire\Exercises\ExercisesIndex;
+use App\Models\BodyPart;
 use App\Models\Exercise;
+use App\Models\MuscleGroup;
 use App\Models\User;
 use Livewire\Livewire;
 
@@ -80,4 +82,63 @@ test('exercise can be deleted from exercises index by owner', function () {
         ->assertDispatched('exercise-deleted');
 
     expect(Exercise::find($exercise->id))->toBeNull();
+});
+
+test('exercises index renders without lazy loading violation when exercises have body parts and muscle groups', function () {
+    $user = User::factory()->create();
+    $bodyPart = BodyPart::factory()->create(['name' => 'Chest Body Part']);
+    $muscleGroup = MuscleGroup::factory()->create(['name' => 'Chest Muscle Group']);
+
+    $exercise = Exercise::factory()->create(['name' => 'Bench Press Exercise']);
+    $exercise->bodyParts()->attach($bodyPart);
+    $exercise->muscleGroups()->attach($muscleGroup);
+
+    Livewire::actingAs($user)
+        ->test(ExercisesIndex::class)
+        ->assertSuccessful()
+        ->assertSee('Bench Press Exercise')
+        ->assertSee('Chest Body Part')
+        ->assertSee('Chest Muscle Group');
+});
+
+test('exercises index can filter exercises by body part', function () {
+    $user = User::factory()->create();
+    $bodyPartA = BodyPart::factory()->create(['name' => 'Arms']);
+    $bodyPartB = BodyPart::factory()->create(['name' => 'Legs']);
+
+    $exerciseA = Exercise::factory()->create(['name' => 'Bicep Curl']);
+    $exerciseA->bodyParts()->attach($bodyPartA);
+
+    $exerciseB = Exercise::factory()->create(['name' => 'Leg Extension']);
+    $exerciseB->bodyParts()->attach($bodyPartB);
+
+    Livewire::actingAs($user)
+        ->test(ExercisesIndex::class)
+        ->assertSee('Bicep Curl')
+        ->assertSee('Leg Extension')
+        ->set('bodyPartId', $bodyPartA->id)
+        ->assertSee('Bicep Curl')
+        ->assertDontSee('Leg Extension')
+        ->assertSeeHtml('<span>Arms</span>');
+});
+
+test('exercises index can filter exercises by muscle group', function () {
+    $user = User::factory()->create();
+    $muscleGroupA = MuscleGroup::factory()->create(['name' => 'Chest Group']);
+    $muscleGroupB = MuscleGroup::factory()->create(['name' => 'Back Group']);
+
+    $exerciseA = Exercise::factory()->create(['name' => 'Chest Press']);
+    $exerciseA->muscleGroups()->attach($muscleGroupA);
+
+    $exerciseB = Exercise::factory()->create(['name' => 'Lat Pulldown']);
+    $exerciseB->muscleGroups()->attach($muscleGroupB);
+
+    Livewire::actingAs($user)
+        ->test(ExercisesIndex::class)
+        ->assertSee('Chest Press')
+        ->assertSee('Lat Pulldown')
+        ->set('muscleGroupId', $muscleGroupA->id)
+        ->assertSee('Chest Press')
+        ->assertDontSee('Lat Pulldown')
+        ->assertSeeHtml('<span>Chest Group</span>');
 });

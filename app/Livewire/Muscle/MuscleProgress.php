@@ -7,11 +7,12 @@ use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 class MuscleProgress extends Component
 {
-    public string $period = 'this_month';
+    public string $period = 'all_time';
 
     public ?int $expandedBodyPartId = null;
 
@@ -51,6 +52,7 @@ class MuscleProgress extends Component
             : $bodyPartId;
     }
 
+    #[Layout('layouts.app', ['pageTitle' => 'Muscle progress'])]
     public function render(MuscleProgressService $muscleProgressService): View
     {
         $userId = auth()->id();
@@ -103,10 +105,11 @@ class MuscleProgress extends Component
     {
         return match ($this->period) {
             'this_week' => [now()->startOfWeek(), now()->endOfWeek()],
+            'this_month' => [now()->startOfMonth(), now()->endOfMonth()],
             'last_30_days' => [now()->subDays(30)->startOfDay(), now()->endOfDay()],
             'this_year' => [now()->startOfYear(), now()->endOfYear()],
             'all_time' => [Carbon::createFromTimestamp(0), now()->endOfDay()],
-            default => [now()->startOfMonth(), now()->endOfMonth()],
+            default => [Carbon::createFromTimestamp(0), now()->endOfDay()],
         };
     }
 }

@@ -24,9 +24,9 @@ class MuscleGroupSeeder extends Seeder
                 'Rotator Cuff',
             ],
 
+            // 'Pectorals' is samengevoegd met 'Chest' (waren dubbelop)
             'Chest' => [
                 'Chest',
-                'Pectorals',
             ],
 
             'Back' => [
@@ -62,6 +62,7 @@ class MuscleGroupSeeder extends Seeder
                 'Abductors',
                 'Calves',
                 'Tibialis Anterior',
+                'Peroneals',
             ],
 
             'Cardio' => [

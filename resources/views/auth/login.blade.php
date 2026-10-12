@@ -1,16 +1,11 @@
 <x-guest-layout :pageTitle="__('Log in')">
 
-
     <x-card.default variant="primary">
-
         <x-auth-session-status class="text-center" :status="session('status')"/>
-
         <x-authenticate-passkey/>
 
         <form method="POST" action="{{ route('login') }}" class="flex flex-col gap-6 pt-4">
             @csrf
-
-            <!-- Email Address -->
             <div>
                 <x-form.label class="sr-only" for="login" :value="__('Email or Username')"/>
                 <x-form.input icon="user"
@@ -23,8 +18,6 @@
                 />
                 <x-form.error :messages="$errors->get('email')"/>
             </div>
-
-            <!-- Password -->
             <div class="pt-2">
                 <x-form.label class="sr-only" for="password" :value="__('Password')"/>
                 <x-form.input icon="lock"
@@ -36,7 +29,6 @@
                               autocomplete="current-password"
                               :placeholder="__('Password')"/>
                 <x-form.error :messages="$errors->get('password')"/>
-
             </div>
             <div class="flex justify-end -mt-6">
                 @if (Route::has('password.request'))
@@ -45,13 +37,10 @@
                     </x-link.default>
                 @endif
             </div>
-
-            <!-- Remember Me -->
             <div class="flex items-center gap-2">
                 <x-form.checkbox name="remember" id="remember_me"/>
                 <x-form.label for="remember_me" class="text-sm text-muted" :value="__('Remember me')"/>
             </div>
-
             <div class="flex items-center justify-end">
                 <x-button.default variant="primary" class="w-full">
                     {{ __('Log in') }}
@@ -59,7 +48,7 @@
             </div>
         </form>
 
-        <div class="flex justify-center items-center">
+        <div class="flex justify-center items-center pt-2">
             <div class="text-sm text-primary">{{ __('New to MyFitness?') }}</div>
             <x-link.default variant="ghost"
                             href="{{ route('register') }}">
@@ -67,5 +56,4 @@
             </x-link.default>
         </div>
     </x-card.default>
-
 </x-guest-layout>

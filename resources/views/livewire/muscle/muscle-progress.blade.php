@@ -3,7 +3,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-border">
         <div class="flex items-center gap-2.5">
             <div class="p-2 rounded-lg bg-secondary/10 text-secondary">
-                <x-lucide-activity class="w-5 h-5" />
+                <x-lucide-dumbbell class="w-5 h-5"/>
             </div>
             <div>
                 <div class="flex items-center gap-2">
@@ -11,7 +11,8 @@
                         {{ __('Muscle Group Progress') }}
                     </h2>
                     @if ($totalSets > 0)
-                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-secondary/15 text-secondary border border-secondary/20">
+                        <span
+                            class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-secondary/15 text-secondary border border-secondary/20">
                             {{ $totalSets }} {{ __('sets') }}
                         </span>
                     @endif
@@ -40,7 +41,7 @@
     <div class="mt-4 space-y-3">
         @if ($bodyParts->isEmpty())
             <div class="py-8 text-center">
-                <x-lucide-dumbbell class="w-10 h-10 text-muted/50 mx-auto mb-2" />
+                <x-lucide-dumbbell class="w-10 h-10 text-muted/50 mx-auto mb-2"/>
                 <p class="text-sm font-medium text-primary">
                     {{ __('No completed sets recorded in this period.') }}
                 </p>
@@ -69,7 +70,8 @@
                             <div class="flex items-center justify-between gap-2">
                                 <div class="flex items-center gap-2 min-w-0">
                                     <span class="inline-block w-2 h-2 rounded-full bg-secondary shrink-0"></span>
-                                    <span class="font-medium text-sm text-primary group-hover:text-secondary transition truncate">
+                                    <span
+                                        class="font-medium text-sm text-primary group-hover:text-secondary transition truncate">
                                         {{ $bodyPart->name }}
                                     </span>
                                 </div>
@@ -80,9 +82,9 @@
                                     </span>
                                     <span class="text-muted text-xs group-hover:text-secondary transition">
                                         @if ($isExpanded)
-                                            <x-lucide-chevron-up class="w-4 h-4" />
+                                            <x-lucide-chevron-up class="w-4 h-4"/>
                                         @else
-                                            <x-lucide-chevron-down class="w-4 h-4" />
+                                            <x-lucide-chevron-down class="w-4 h-4"/>
                                         @endif
                                     </span>
                                 </div>
@@ -122,10 +124,13 @@
                                                 class="flex flex-col gap-1 p-2 rounded-md bg-surface-secondary/50 border border-border/30"
                                             >
                                                 <div class="flex items-center justify-between text-xs">
-                                                    <span class="text-primary font-medium">{{ $muscleGroup->name }}</span>
-                                                    <span class="text-muted font-semibold">{{ $muscleGroup->total_sets }} {{ __('sets') }}</span>
+                                                    <span
+                                                        class="text-primary font-medium">{{ $muscleGroup->name }}</span>
+                                                    <span
+                                                        class="text-muted font-semibold">{{ $muscleGroup->total_sets }} {{ __('sets') }}</span>
                                                 </div>
-                                                <div class="w-full bg-surface-alt/30 dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden">
+                                                <div
+                                                    class="w-full bg-surface-alt/30 dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden">
                                                     <div
                                                         class="bg-pink-500 dark:bg-pink-400 h-1.5 rounded-full transition-all duration-500"
                                                         style="width: {{ $mgPercentage }}%"

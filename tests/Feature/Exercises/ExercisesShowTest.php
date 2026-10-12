@@ -35,3 +35,28 @@ test('overview displays muscles sorted by primary, secondary, then stabilizer ro
         ->and($primaryPos)->toBeLessThan($secondaryPos)
         ->and($secondaryPos)->toBeLessThan($stabilizerPos);
 });
+
+test('how to tab displays instructions when exercise has howto', function () {
+    $user = User::factory()->create();
+    $exercise = Exercise::factory()->create([
+        'howto' => '<p><span style="font-weight: bold;">Instelling en Uitvoering</span></p>',
+    ]);
+
+    Livewire::actingAs($user)
+        ->test(ExercisesShow::class, ['exercise' => $exercise])
+        ->set('tab', 'how-to')
+        ->assertSeeHtml('Instelling en Uitvoering')
+        ->assertSeeHtml('prose prose-orange');
+});
+
+test('how to tab displays empty message when exercise has no howto', function () {
+    $user = User::factory()->create();
+    $exercise = Exercise::factory()->create([
+        'howto' => null,
+    ]);
+
+    Livewire::actingAs($user)
+        ->test(ExercisesShow::class, ['exercise' => $exercise])
+        ->set('tab', 'how-to')
+        ->assertSee('No instructions available for this exercise yet.');
+});

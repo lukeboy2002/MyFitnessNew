@@ -1,7 +1,7 @@
 <div class="flex flex-col gap-5">
 
     {{-- Latest --}}
-    @if ($progressData->isNotEmpty())
+    @if ($progressData->isNotEmpty() && $metric)
         @php
             $latest = $progressData->last();
         @endphp
@@ -25,19 +25,21 @@
 
 
     {{-- Metric buttons --}}
-    <div class="flex gap-2 overflow-x-auto">
-        @foreach ($metrics as $key => $label)
-            <button type="button"
-                    wire:click="setMetric('{{ $key }}')"
-                    class="shrink-0 rounded-lg px-4 py-2 text-sm font-medium transition
-                    {{ $metric === $key
-                        ? 'bg-secondary text-primary'
-                        : 'bg-surface-hover text-secondary hover:text-primary'
-                    }}">
-                {{ $label }}
-            </button>
-        @endforeach
-    </div>
+    @if (count($metrics))
+        <div class="flex gap-2 overflow-x-auto">
+            @foreach ($metrics as $key => $label)
+                <button type="button"
+                        wire:click="setMetric('{{ $key }}')"
+                        class="shrink-0 rounded-lg px-4 py-2 text-sm font-medium transition
+                        {{ $metric === $key
+                            ? 'bg-secondary text-primary'
+                            : 'bg-surface-hover text-secondary hover:text-primary'
+                        }}">
+                    {{ $label }}
+                </button>
+            @endforeach
+        </div>
+    @endif
 
     {{-- Chart --}}
     <div class="rounded-xl border border-border bg-surface p-5">

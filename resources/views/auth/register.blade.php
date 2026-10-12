@@ -2,7 +2,6 @@
 
     <!-- Session Status -->
     <x-auth-session-status class="text-center pb-1" :status="session('status')"/>
-
     <x-card.default variant="primary" font_weight="black" text_size="text-2xl" text_color="text-secondary">
 
         <form method="POST" action="{{ route('register') }}" class="flex flex-col gap-6">
@@ -21,7 +20,6 @@
                               :placeholder="__('Full Name')"/>
                 <x-form.error :messages="$errors->get('name')"/>
             </div>
-
             <div class="mt-4">
                 <x-form.label class="sr-only" for="username" :value="__('Username')"/>
                 <x-form.input icon="circle-user-round"
@@ -36,7 +34,6 @@
                               :placeholder="__('Username')"/>
                 <x-form.error :messages="$errors->get('username')"/>
             </div>
-
             <div class="mt-4">
                 <x-form.label class="sr-only" for="email" :value="__('Email Address')"/>
                 <x-form.input icon="mail"
@@ -50,7 +47,6 @@
                               :placeholder="__('Email Address')"/>
                 <x-form.error :messages="$errors->get('email')"/>
             </div>
-
             <div class="mt-4">
                 <x-form.label class="sr-only" for="password" :value="__('Password')"/>
                 <x-form.input icon="lock"
@@ -76,13 +72,11 @@
                 />
                 <x-form.error :messages="$errors->get('password_confirmation')"/>
             </div>
-
             <x-button.default variant="primary" class="w-full">
                 {{ __('Register') }}
             </x-button.default>
         </form>
-
-        <div class="flex justify-center items-center">
+        <div class="flex justify-center items-center mt-2">
             <div class="text-sm text-primary">{{ __('Already have an account?') }}</div>
             <x-link.default variant="ghost"
                             href="{{ route('login') }}">

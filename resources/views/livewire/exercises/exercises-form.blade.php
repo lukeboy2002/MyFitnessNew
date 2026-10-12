@@ -74,8 +74,36 @@
                 </div>
 
                 <div>
-                    @include('livewire.exercises.partials.how-to-form', ['allowImageUpload' => true])
+                    <x-form.label for="howto" :value="__('How to (one step per line)')"/>
+
+                    <textarea
+                        id="howto"
+                        wire:model="howto"
+                        rows="6"
+                        placeholder="Stap 1: Ga op het apparaat zitten...&#10;Stap 2: Pak de handvatten vast...&#10;Stap 3: Breng de armen naar elkaar toe..."
+                        class="w-full rounded-md border-border bg-transparent text-primary focus:border-secondary focus:ring-primary text-sm p-3"
+                    ></textarea>
+
+                    <x-form.error :messages="$errors->get('howto')"/>
                 </div>
+
+                <div>
+                    <x-form.label for="howto" :value="__('Tips (one tip per line)')"/>
+
+                    <textarea
+                        id="tips"
+                        wire:model="tips"
+                        rows="6"
+                        placeholder="hier tips"
+                        class="w-full rounded-md border-border bg-transparent text-primary focus:border-secondary focus:ring-primary text-sm p-3"
+                    ></textarea>
+
+                    <x-form.error :messages="$errors->get('tips')"/>
+                </div>
+
+                {{--                <div>--}}
+                {{--                    @include('livewire.exercises.partials.how-to-form', ['allowImageUpload' => true])--}}
+                {{--                </div>--}}
 
                 <div x-data="{ type: @entangle('type') }">
                     <div class="grid grid-cols-2 gap-2">
@@ -107,6 +135,20 @@
                     {{--                        <x-form.error :messages="$errors->get('muscle_group_id')" class="mt-2"/>--}}
                     {{--                    </div>--}}
                     <div x-show="type === 'strength'" x-transition class="space-y-6 mt-4">
+
+                        <div>
+                            <x-form.label
+                                :value="__('Body parts')"
+                            />
+
+                            <div class="mt-2">
+                                <x-form.multi-select
+                                    :options="$bodyParts"
+                                    wire:model="selectedBodyParts"
+                                    :placeholder="__('Select body parts...')"
+                                />
+                            </div>
+                        </div>
 
                         <div>
                             <x-form.label
@@ -209,33 +251,33 @@
             </form>
         </x-card>
     </div>
-    <script>
-        function exerciseForm() {
-            return {
-                type: '{{ old('type', '') }}',
-            };
-        }
+    {{--    <script>--}}
+    {{--        function exerciseForm() {--}}
+    {{--            return {--}}
+    {{--                type: '{{ old('type', '') }}',--}}
+    {{--            };--}}
+    {{--        }--}}
 
-        function imagePreview() {
-            return {
-                preview: null,
+    {{--        function imagePreview() {--}}
+    {{--            return {--}}
+    {{--                preview: null,--}}
 
-                showPreview(event) {
-                    const file = event.target.files[0];
-                    if (file && file.type.startsWith('image/')) {
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            this.preview = e.target.result;
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                },
+    {{--                showPreview(event) {--}}
+    {{--                    const file = event.target.files[0];--}}
+    {{--                    if (file && file.type.startsWith('image/')) {--}}
+    {{--                        const reader = new FileReader();--}}
+    {{--                        reader.onload = (e) => {--}}
+    {{--                            this.preview = e.target.result;--}}
+    {{--                        };--}}
+    {{--                        reader.readAsDataURL(file);--}}
+    {{--                    }--}}
+    {{--                },--}}
 
-                clearPreview() {
-                    this.preview = null;
-                    this.$refs.fileInput.value = '';
-                }
-            };
-        }
-    </script>
+    {{--                clearPreview() {--}}
+    {{--                    this.preview = null;--}}
+    {{--                    this.$refs.fileInput.value = '';--}}
+    {{--                }--}}
+    {{--            };--}}
+    {{--        }--}}
+    {{--    </script>--}}
 </div>

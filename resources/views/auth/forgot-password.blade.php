@@ -9,7 +9,7 @@
             {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
         </x-slot:description>
 
-        <form method="POST" action="{{ route('password.email') }}" class="flex flex-col gap-6">
+        <form method="POST" action="{{ route('password.email') }}" class="flex flex-col gap-6 mt-4">
             @csrf
 
             <div>
@@ -34,7 +34,7 @@
             </div>
         </form>
 
-        <div class="flex justify-center items-center">
+        <div class="flex justify-center items-center mt-2">
             <div class="text-sm text-primary">{{ __('Or, return to') }}</div>
             <x-link.default variant="ghost"
                             href="{{ route('login') }}">

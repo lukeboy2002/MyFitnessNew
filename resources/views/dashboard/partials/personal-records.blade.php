@@ -1,5 +1,6 @@
-<a href="{{ route('personal-records.index') }}">
-    <x-card.default variant="outline" class="w-full">
+<a href="{{ route('personal-records.index') }}" class="block group focus:outline-none">
+    <x-card.default variant="outline"
+                    class="w-full transition-colors group-hover:border-secondary group-focus-visible:border-secondary">
 
         {{-- Header --}}
         <div class="flex items-center justify-between mb-5 relative">

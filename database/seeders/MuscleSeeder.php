@@ -15,6 +15,9 @@ class MuscleSeeder extends Seeder
 
             'Neck' => [
                 'Sternocleidomastoideus',
+                'Scalenen',
+                'Splenius capitis',
+                'Splenius cervicis',
             ],
 
             'Traps' => [
@@ -23,6 +26,11 @@ class MuscleSeeder extends Seeder
 
             'Upper Back' => [
                 'Levator scapulae',
+                'Serratus posterior',
+            ],
+
+            // Rhomboideus stond eerst onder 'Upper Back'
+            'Rhomboids' => [
                 'Rhomboideus',
             ],
 
@@ -34,15 +42,18 @@ class MuscleSeeder extends Seeder
             'Lower Back' => [
                 'Erector spinae',
                 'Multifidus',
+                'Quadratus lumborum',
             ],
 
             'Biceps' => [
                 'Biceps brachii',
                 'Brachialis',
+                'Coracobrachialis',
             ],
 
             'Triceps' => [
                 'Triceps brachii',
+                'Anconeus',
             ],
 
             'Front Delts' => [
@@ -64,13 +75,14 @@ class MuscleSeeder extends Seeder
                 'Subscapularis',
             ],
 
-            'Pectorals' => [
+            'Chest' => [
                 'Pectoralis major',
                 'Pectoralis minor',
             ],
 
             'Forearm Flexors' => [
                 'Brachioradialis',
+                'Pronator teres',
                 'Flexor carpi radialis',
                 'Flexor carpi ulnaris',
                 'Palmaris longus',
@@ -79,6 +91,7 @@ class MuscleSeeder extends Seeder
             ],
 
             'Forearm Extensors' => [
+                'Supinator',
                 'Extensor carpi radialis longus',
                 'Extensor carpi radialis brevis',
                 'Extensor carpi ulnaris',
@@ -87,6 +100,7 @@ class MuscleSeeder extends Seeder
 
             'Abs' => [
                 'Rectus abdominis',
+                'Transversus abdominis',
             ],
 
             'Obliques' => [
@@ -95,7 +109,7 @@ class MuscleSeeder extends Seeder
             ],
 
             'Serratus Anterior' => [
-                'Serratus Anterior',
+                'Serratus anterior',
             ],
 
             'Quadriceps' => [
@@ -114,32 +128,41 @@ class MuscleSeeder extends Seeder
             'Calves' => [
                 'Gastrocnemius',
                 'Soleus',
+                'Popliteus',
+                'Tibialis posterior',
             ],
 
             'Tibialis Anterior' => [
                 'Tibialis anterior',
             ],
 
+            'Peroneals' => [
+                'Peroneus longus',
+                'Peroneus brevis',
+            ],
+
             'Glutes' => [
                 'Gluteus maximus',
                 'Gluteus medius',
                 'Gluteus minimus',
+                'Piriformis',
             ],
 
             'Hip Flexors' => [
                 'Iliopsoas',
+                'Sartorius',
             ],
 
             'Abductors' => [
-                'Tensor Fasciae Latae',
+                'Tensor fasciae latae',
             ],
 
             'Adductors' => [
                 'Gracilis',
                 'Pectineus',
-                'Adductor Longus',
-                'Adductor Brevis',
-                'Adductor Magnus',
+                'Adductor longus',
+                'Adductor brevis',
+                'Adductor magnus',
             ],
         ];
 
